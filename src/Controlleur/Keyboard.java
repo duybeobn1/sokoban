@@ -2,7 +2,6 @@ package Controlleur;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import org.w3c.dom.events.Event;
 public class Keyboard implements KeyListener {
     private boolean[] keys;
     public static boolean UP, LEFT, RIGHT, DOWN;
