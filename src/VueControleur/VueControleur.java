@@ -66,7 +66,6 @@ public class VueControleur extends JFrame implements Observer {
                     case KeyEvent.VK_UP : jeu.deplacerHeros(Direction.haut); break;
                 }
             }
-
         });
     }
 

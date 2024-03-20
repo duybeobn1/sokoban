@@ -9,7 +9,7 @@ package modele;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Observable;
-
+import modele.State.*;
 
 public class Jeu extends Observable {
 
@@ -17,6 +17,10 @@ public class Jeu extends Observable {
     public static final int SIZE_Y = 10;
 
 
+    private GameState gameState;
+	private LevelSelectorState levelSelectorState;
+	private MenuState menuState;
+	private LoadingState loadingState;
 
     private Heros heros;
 
@@ -47,9 +51,12 @@ public class Jeu extends Observable {
 
     
     private void initialisationNiveau() {
-
-
-
+        Assets.init();
+		menuState = new MenuState(this);
+		gameState = new GameState(this);
+		loadingState = new LoadingState(this);
+		levelSelectorState = new LevelSelectorState(this);
+		State.currentState = loadingState;
 
         // murs extérieurs horizontaux
         for (int x = 0; x < 20; x++) {
@@ -145,5 +152,15 @@ public class Jeu extends Observable {
         
         return retour;
     }
+
+    public State getGameState(){
+		return gameState;
+	}
+	public State getLevelSelectorState(){
+		return levelSelectorState;
+	}
+	public State getMenuState(){
+		return menuState;
+	}
 
 }
