@@ -51,12 +51,6 @@ public class Jeu extends Observable {
 
     
     private void initialisationNiveau() {
-        Assets.init();
-		menuState = new MenuState(this);
-		gameState = new GameState(this);
-		loadingState = new LoadingState(this);
-		levelSelectorState = new LevelSelectorState(this);
-		State.currentState = loadingState;
 
         // murs extérieurs horizontaux
         for (int x = 0; x < 20; x++) {
