@@ -33,6 +33,7 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoVide;
     private ImageIcon icoMur;
     private ImageIcon icoBloc;
+    private ImageIcon icoObjectif;
 
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
@@ -53,17 +54,18 @@ public class VueControleur extends JFrame implements Observer {
 
     }
 
-    private void ajouterEcouteurClavier() { // changer etat boolean de clavier
-
-        
+    private void ajouterEcouteurClavier() {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un objet qui correspond au controleur dans MVC
             @Override
             public void keyPressed(KeyEvent e) {
                 switch(e.getKeyCode()) {  // on regarde quelle touche a été pressée
+
                     case KeyEvent.VK_LEFT : jeu.deplacerHeros(Direction.gauche); break;
                     case KeyEvent.VK_RIGHT : jeu.deplacerHeros(Direction.droite); break;
                     case KeyEvent.VK_DOWN : jeu.deplacerHeros(Direction.bas); break;
                     case KeyEvent.VK_UP : jeu.deplacerHeros(Direction.haut); break;
+
+
                 }
             }
         });
@@ -75,6 +77,7 @@ public class VueControleur extends JFrame implements Observer {
         icoVide = chargerIcone("Images/Vide.png");
         icoMur = chargerIcone("Images/Mur.png");
         icoBloc = chargerIcone("Images/Colonne.png");
+        icoObjectif = chargerIcone("Images/Objectif.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -131,13 +134,15 @@ public class VueControleur extends JFrame implements Observer {
                             tabJLabel[x][y].setIcon(icoHero);
                         } else if (c.getEntite() instanceof Bloc) {
                             tabJLabel[x][y].setIcon(icoBloc);
-                        }
+                        } 
                     } else {
                         if (jeu.getGrille()[x][y] instanceof Mur) {
                             tabJLabel[x][y].setIcon(icoMur);
                         } else if (jeu.getGrille()[x][y] instanceof Vide) {
-
                             tabJLabel[x][y].setIcon(icoVide);
+                        }
+                        else if (jeu.getGrille()[x][y] instanceof Objectif) {
+                            tabJLabel[x][y].setIcon(icoObjectif);
                         }
                     }
 
