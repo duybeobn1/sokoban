@@ -13,17 +13,20 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-
 import modele.*;
 
-
-/** Cette classe a deux fonctions :
- *  (1) Vue : proposer une représentation graphique de l'application (cases graphiques, etc.)
- *  (2) Controleur : écouter les évènements clavier et déclencher le traitement adapté sur le modèle (flèches direction Pacman, etc.))
+/**
+ * Cette classe a deux fonctions :
+ * (1) Vue : proposer une représentation graphique de l'application (cases
+ * graphiques, etc.)
+ * (2) Controleur : écouter les évènements clavier et déclencher le traitement
+ * adapté sur le modèle (flèches direction Pacman, etc.))
  *
  */
 public class VueControleur extends JFrame implements Observer {
-    private Jeu jeu; // référence sur une classe de modèle : permet d'accéder aux données du modèle pour le rafraichissement, permet de communiquer les actions clavier (ou souris)
+    private Jeu jeu; // référence sur une classe de modèle : permet d'accéder aux données du modèle
+                     // pour le rafraichissement, permet de communiquer les actions clavier (ou
+                     // souris)
 
     private int sizeX; // taille de la grille affichée
     private int sizeY;
@@ -35,9 +38,8 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBloc;
     private ImageIcon icoObjectif;
 
-
-    private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
-
+    private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
+                                  // à une icône, suivant ce qui est présent dans le modèle)
 
     public VueControleur(Jeu _jeu) {
         sizeX = jeu.SIZE_X;
@@ -55,22 +57,29 @@ public class VueControleur extends JFrame implements Observer {
     }
 
     private void ajouterEcouteurClavier() {
-        addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un objet qui correspond au controleur dans MVC
+        addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un
+                                          // objet qui correspond au controleur dans MVC
             @Override
             public void keyPressed(KeyEvent e) {
-                switch(e.getKeyCode()) {  // on regarde quelle touche a été pressée
+                switch (e.getKeyCode()) { // on regarde quelle touche a été pressée
 
-                    case KeyEvent.VK_LEFT : jeu.deplacerHeros(Direction.gauche); break;
-                    case KeyEvent.VK_RIGHT : jeu.deplacerHeros(Direction.droite); break;
-                    case KeyEvent.VK_DOWN : jeu.deplacerHeros(Direction.bas); break;
-                    case KeyEvent.VK_UP : jeu.deplacerHeros(Direction.haut); break;
-
+                    case KeyEvent.VK_LEFT:
+                        jeu.deplacerHeros(Direction.gauche);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        jeu.deplacerHeros(Direction.droite);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        jeu.deplacerHeros(Direction.bas);
+                        break;
+                    case KeyEvent.VK_UP:
+                        jeu.deplacerHeros(Direction.haut);
+                        break;
 
                 }
             }
         });
     }
-
 
     private void chargerLesIcones() {
         icoHero = chargerIcone("Images/Pacman.png");
@@ -98,27 +107,28 @@ public class VueControleur extends JFrame implements Observer {
         setSize(400, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
-        JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
+        JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases
+                                                                             // graphiques et les positionner sous la
+                                                                             // forme d'une grille
 
         tabJLabel = new JLabel[sizeX][sizeY];
 
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
                 JLabel jlab = new JLabel();
-                tabJLabel[x][y] = jlab; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique à celles-ci (voir mettreAJourAffichage() )
+                tabJLabel[x][y] = jlab; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique
+                                        // à celles-ci (voir mettreAJourAffichage() )
                 grilleJLabels.add(jlab);
             }
         }
         add(grilleJLabels);
     }
 
-    
     /**
-     * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
+     * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté
+     * de la vue (tabJLabel)
      */
     private void mettreAJourAffichage() {
-
-
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
@@ -129,24 +139,21 @@ public class VueControleur extends JFrame implements Observer {
 
                     Entite e = c.getEntite();
 
-                    if (e!= null) {
+                    if (e != null) {
                         if (c.getEntite() instanceof Heros) {
                             tabJLabel[x][y].setIcon(icoHero);
                         } else if (c.getEntite() instanceof Bloc) {
                             tabJLabel[x][y].setIcon(icoBloc);
-                        } 
+                        }
                     } else {
                         if (jeu.getGrille()[x][y] instanceof Mur) {
                             tabJLabel[x][y].setIcon(icoMur);
                         } else if (jeu.getGrille()[x][y] instanceof Vide) {
                             tabJLabel[x][y].setIcon(icoVide);
-                        }
-                        else if (jeu.getGrille()[x][y] instanceof Objectif) {
+                        } else if (jeu.getGrille()[x][y] instanceof Objectif) {
                             tabJLabel[x][y].setIcon(icoObjectif);
                         }
                     }
-
-
 
                 }
 
@@ -157,19 +164,41 @@ public class VueControleur extends JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         mettreAJourAffichage();
+        jeu.updateBoxesOnObjectifs(); // Update the count of boxes on objectives
+        if (jeu.isWinConditionMet()) { // Check if the win condition is met
+            System.out.println("Congratulations! You won the game!");
+        }
+
         /*
+         * 
+         * // récupérer le processus graphique pour rafraichir
+         * // (normalement, à l'inverse, a l'appel du modèle depuis le contrôleur,
+         * utiliser un autre processus, voir classe Executor)
+         * 
+         * 
+         * SwingUtilities.invokeLater(new Runnable() {
+         * 
+         * @Override
+         * public void run() {
+         * mettreAJourAffichage();
+         * }
+         * });
+         */
 
-        // récupérer le processus graphique pour rafraichir
-        // (normalement, à l'inverse, a l'appel du modèle depuis le contrôleur, utiliser un autre processus, voir classe Executor)
+    }
 
-
-        SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mettreAJourAffichage();
+    private boolean allObjectivesCompleted() {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                Case c = jeu.getGrille()[x][y];
+                if (c instanceof Objectif) {
+                    Objectif obj = (Objectif) c;
+                    if (obj.hasBlock()) {
+                        return false; // There's still an objective without a block on it
                     }
-                }); 
-        */
-
+                }
+            }
+        }
+        return true; // All objectives have blocks on them
     }
 }

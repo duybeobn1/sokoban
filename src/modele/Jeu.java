@@ -11,8 +11,11 @@ import java.util.Observable;
 
 public class Jeu extends Observable {
 
-    public static final int SIZE_X = 20;
-    public static final int SIZE_Y = 10;
+    public static final int SIZE_X = 16;
+    public static final int SIZE_Y = 8;
+
+    private int totalObjectifs = 0;
+    private int boxesOnObjectifs = 0;
 
     private Heros heros;
 
@@ -46,7 +49,7 @@ public class Jeu extends Observable {
 
     private void initialisationNiveau() {
 
-        int data[][] = loadLevel("C:\\Users\\ADMIN\\Desktop\\sokoban\\src\\0.txt");
+        int data[][] = loadLevel("C:\\Users\\ADMIN\\Desktop\\Java\\sokoban\\src\\0.txt");
 
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
@@ -58,16 +61,11 @@ public class Jeu extends Observable {
                 }
                 else if(data[i][j]==3) {
                     addCase(new Objectif(this), i, j);
+                    totalObjectifs++;
                 }
                 else {
                     addCase(new Vide(this), i, j);
                 }
-                // if(data[i][j]==2) {
-                //     Bloc b = new Bloc(this, grilleEntites[i][j]);
-                // }
-                // if(data[i][j]==4) {
-                //     heros = new Heros(this, grilleEntites[i][j]);
-                // }
             }
         }
 
@@ -82,32 +80,6 @@ public class Jeu extends Observable {
                 }
             }
         }
-
-
-
-
-
-
-        // murs extérieurs horizontaux
-        // for (int x = 0; x < 20; x++) {
-        //     addCase(new Mur(this), x, 0);
-        //     addCase(new Mur(this), x, 9);
-        // }
-        // // murs extérieurs verticaux
-        // for (int y = 1; y < 9; y++) {
-        //     addCase(new Mur(this), 0, y);
-        //     addCase(new Mur(this), 19, y);
-        // }
-
-        // for (int x = 1; x < 19; x++) {
-        //     for (int y = 1; y < 9; y++) {
-        //         addCase(new Vide(this), x, y);
-        //     }
-
-        // }
-        // addCase(new Objectif(this), 3, 4);
-        // heros = new Heros(this, grilleEntites[4][4]);
-        // Bloc b = new Bloc(this, grilleEntites[6][6]);
     }
 
     private void addCase(Case e, int x, int y) {
@@ -115,6 +87,23 @@ public class Jeu extends Observable {
         map.put(e, new Point(x, y));
     }
 
+    public boolean isWinConditionMet() {
+        return boxesOnObjectifs == totalObjectifs;
+    }
+    public void updateBoxesOnObjectifs() {
+        boxesOnObjectifs = 0;
+        for (int i = 0; i < SIZE_X; i++) {
+            for (int j = 0; j < SIZE_Y; j++) {
+                if (grilleEntites[i][j] instanceof Objectif) {
+                    Objectif obj = (Objectif) grilleEntites[i][j];
+                    if (obj.hasBlock()) { // Check if the objective has a block
+                        boxesOnObjectifs++;
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * Si le déplacement de l'entité est autorisé (pas de mur ou autre entité), il
      * est réalisé
