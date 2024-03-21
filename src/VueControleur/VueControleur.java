@@ -186,19 +186,4 @@ public class VueControleur extends JFrame implements Observer {
          */
 
     }
-
-    private boolean allObjectivesCompleted() {
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                Case c = jeu.getGrille()[x][y];
-                if (c instanceof Objectif) {
-                    Objectif obj = (Objectif) c;
-                    if (obj.hasBlock()) {
-                        return false; // There's still an objective without a block on it
-                    }
-                }
-            }
-        }
-        return true; // All objectives have blocks on them
-    }
 }
