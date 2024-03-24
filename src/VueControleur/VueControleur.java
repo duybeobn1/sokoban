@@ -1,6 +1,9 @@
 package VueControleur;
 
+import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -38,10 +41,16 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBloc;
     private ImageIcon icoObjectif;
 
+    private JMenuBar menuBar;
+    private JMenu menu;
+    private JMenuItem startMenuItem;
+    private JMenuItem exitMenuItem;
+
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
 
     public VueControleur(Jeu _jeu) {
+
         sizeX = jeu.SIZE_X;
         sizeY = _jeu.SIZE_Y;
         jeu = _jeu;
@@ -49,12 +58,68 @@ public class VueControleur extends JFrame implements Observer {
         chargerLesIcones();
         placerLesComposantsGraphiques();
         ajouterEcouteurClavier();
-
+        creerMenu();
+        // homePage();
         jeu.addObserver(this);
 
-        mettreAJourAffichage();
-
     }
+
+    private void creerMenu() {
+        menuBar = new JMenuBar();
+        menu = new JMenu("Menu");
+        startMenuItem = new JMenuItem("Start");
+        exitMenuItem = new JMenuItem("Exit");
+
+        menu.add(startMenuItem);
+        menu.add(exitMenuItem);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+
+        startMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mettreAJourAffichage();
+            }
+        });
+
+        exitMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+
+    // private void homePage() {
+    // JPanel homePage = new JPanel();
+    // JButton start = new JButton("START");
+    // JButton exit = new JButton("EXIT");
+
+    // homePage.setBounds(70, 20, 200, 170);
+    // homePage.setBackground(Color.gray);
+
+    // start.setBounds(50, 100, 80, 30);
+    // start.setBackground(Color.yellow);
+
+    // exit.setBounds(100, 100, 80, 30);
+    // exit.setBackground(Color.green);
+
+    // start.addActionListener(new ActionListener() {
+    // public void actionPerformed(ActionEvent e) {
+    // placerLesComposantsGraphiques();
+    // mettreAJourAffichage();
+
+    // }
+    // });
+
+    // exit.addActionListener(new ActionListener() {
+    // public void actionPerformed(ActionEvent e) {
+    // System.exit(0);
+    // }
+    // });
+    // homePage.add(start);
+    // homePage.add(exit);
+    // add(homePage);
+    // setLayout(null);
+    // }
 
     private void ajouterEcouteurClavier() {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un
@@ -103,6 +168,7 @@ public class VueControleur extends JFrame implements Observer {
     }
 
     private void placerLesComposantsGraphiques() {
+
         setTitle("Sokoban");
         setSize(400, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
@@ -110,7 +176,6 @@ public class VueControleur extends JFrame implements Observer {
         JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases
                                                                              // graphiques et les positionner sous la
                                                                              // forme d'une grille
-
         tabJLabel = new JLabel[sizeX][sizeY];
 
         for (int y = 0; y < sizeY; y++) {
