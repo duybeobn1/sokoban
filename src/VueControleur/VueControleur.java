@@ -1,5 +1,6 @@
 package VueControleur;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -41,10 +42,6 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBloc;
     private ImageIcon icoObjectif;
 
-    private JMenuBar menuBar;
-    private JMenu menu;
-    private JMenuItem startMenuItem;
-    private JMenuItem exitMenuItem;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
@@ -57,69 +54,12 @@ public class VueControleur extends JFrame implements Observer {
 
         chargerLesIcones();
         placerLesComposantsGraphiques();
+        mettreAJourAffichage();
         ajouterEcouteurClavier();
-        creerMenu();
-        // homePage();
         jeu.addObserver(this);
 
     }
 
-    private void creerMenu() {
-        menuBar = new JMenuBar();
-        menu = new JMenu("Menu");
-        startMenuItem = new JMenuItem("Start");
-        exitMenuItem = new JMenuItem("Exit");
-
-        menu.add(startMenuItem);
-        menu.add(exitMenuItem);
-        menuBar.add(menu);
-        setJMenuBar(menuBar);
-
-        startMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mettreAJourAffichage();
-            }
-        });
-
-        exitMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-    }
-
-    // private void homePage() {
-    // JPanel homePage = new JPanel();
-    // JButton start = new JButton("START");
-    // JButton exit = new JButton("EXIT");
-
-    // homePage.setBounds(70, 20, 200, 170);
-    // homePage.setBackground(Color.gray);
-
-    // start.setBounds(50, 100, 80, 30);
-    // start.setBackground(Color.yellow);
-
-    // exit.setBounds(100, 100, 80, 30);
-    // exit.setBackground(Color.green);
-
-    // start.addActionListener(new ActionListener() {
-    // public void actionPerformed(ActionEvent e) {
-    // placerLesComposantsGraphiques();
-    // mettreAJourAffichage();
-
-    // }
-    // });
-
-    // exit.addActionListener(new ActionListener() {
-    // public void actionPerformed(ActionEvent e) {
-    // System.exit(0);
-    // }
-    // });
-    // homePage.add(start);
-    // homePage.add(exit);
-    // add(homePage);
-    // setLayout(null);
-    // }
 
     private void ajouterEcouteurClavier() {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un
