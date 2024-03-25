@@ -21,10 +21,13 @@ public class StartMenu extends JFrame {
         addButton("Start Game", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // dispose();
+                // Jeu jeu = new Jeu();
+                // VueControleur vc = new VueControleur(jeu);
+                // vc.setVisible(true);
                 dispose();
-                Jeu jeu = new Jeu();
-                VueControleur vc = new VueControleur(jeu);
-                vc.setVisible(true);
+                LevelSelector levelSelector = new LevelSelector();
+                levelSelector.setVisible(true);
             }
         });
 
@@ -47,7 +50,7 @@ public class StartMenu extends JFrame {
             }
         });
 
-        setLocationRelativeTo(null); // This will center the JFrame
+        setLocationRelativeTo(null);
     }
 
     private JButton addButton(String text, ActionListener listener) {
