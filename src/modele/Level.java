@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Level{
+public class Level {
 
     public static int[][] loadLevel(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -24,7 +24,9 @@ public class Level{
             for (int row = 0; row < rows; row++) {
                 String[] tokens = br.readLine().split(" ");
                 for (int col = 0; col < cols; col++) {
-                    levelMap[row][col] = Integer.parseInt(tokens[col]);
+                    if (col < tokens.length) { // Make sure the column exists in this row
+                        levelMap[row][col] = Integer.parseInt(tokens[col]);
+                    }
                 }
             }
 
@@ -46,4 +48,9 @@ public class Level{
             System.out.println();
         }
     }
+
+    // public static void main(String[] args) {
+    //     int[][] x = loadLevel("res/levels/3.txt");
+    //     printLevel(x);
+    // }
 }

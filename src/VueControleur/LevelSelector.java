@@ -17,6 +17,7 @@ public class LevelSelector extends JFrame {
         add(Box.createRigidArea(new Dimension(0, 50)));
 
         // Add Level-select buttons
+        addButton("Level 0", e-> loadLevel(0));
         addButton("Level 1", e -> loadLevel(1));
         addButton("Level 2", e -> loadLevel(2));
         addButton("Level 3", e -> loadLevel(3));
@@ -41,6 +42,10 @@ public class LevelSelector extends JFrame {
 
     private void loadLevel(int level) {
         // load the selected level
+        dispose();
+        Jeu jeu = new Jeu(level);
+        VueControleur vc = new VueControleur(jeu);
+        vc.setVisible(true);
     }
 
     private void back() {

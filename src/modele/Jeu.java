@@ -12,8 +12,9 @@ import java.util.Observable;
 public class Jeu extends Observable {
 
     public static final int SIZE_X = 16;
-    public static final int SIZE_Y = 8;
+    public static final int SIZE_Y = 16;
 
+    private int level;
     private int totalObjectifs = 0;
     private int boxesOnObjectifs = 0;
 
@@ -24,7 +25,8 @@ public class Jeu extends Observable {
     private Case[][] grilleEntites = new Case[SIZE_X][SIZE_Y]; // permet de récupérer une case à partir de ses
                                                                // coordonnées
 
-    public Jeu() {
+    public Jeu(int level) {
+        this.level = level;
         initialisationNiveau();
     }
 
@@ -49,21 +51,18 @@ public class Jeu extends Observable {
 
     private void initialisationNiveau() {
 
-        int data[][] = loadLevel("C:\\Users\\ADMIN\\Desktop\\Java\\sokoban\\src\\0.txt");
+        int data[][] = loadLevel("res/levels/" + level + ".txt");
 
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
-                if(data[i][j]==0) {
+                if (data[i][j] == 0) {
                     addCase(new Vide(this), i, j);
-                }
-                else if(data[i][j]==1) {
+                } else if (data[i][j] == 1) {
                     addCase(new Mur(this), i, j);
-                }
-                else if(data[i][j]==3) {
+                } else if (data[i][j] == 3) {
                     addCase(new Objectif(this), i, j);
                     totalObjectifs++;
-                }
-                else {
+                } else {
                     addCase(new Vide(this), i, j);
                 }
             }
@@ -71,11 +70,11 @@ public class Jeu extends Observable {
 
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
- 
-                if(data[i][j]==2) {
+
+                if (data[i][j] == 2) {
                     Bloc b = new Bloc(this, grilleEntites[i][j]);
                 }
-                if(data[i][j]==4) {
+                if (data[i][j] == 4) {
                     heros = new Heros(this, grilleEntites[i][j]);
                 }
             }
@@ -90,6 +89,7 @@ public class Jeu extends Observable {
     public boolean isWinConditionMet() {
         return boxesOnObjectifs == totalObjectifs;
     }
+
     public void updateBoxesOnObjectifs() {
         boxesOnObjectifs = 0;
         for (int i = 0; i < SIZE_X; i++) {
@@ -103,7 +103,7 @@ public class Jeu extends Observable {
             }
         }
     }
-    
+
     /**
      * Si le déplacement de l'entité est autorisé (pas de mur ou autre entité), il
      * est réalisé
