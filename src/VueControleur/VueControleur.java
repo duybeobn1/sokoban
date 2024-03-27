@@ -1,5 +1,6 @@
 package VueControleur;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -42,7 +43,6 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBloc;
     private ImageIcon icoObjectif;
 
-
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
 
@@ -59,7 +59,6 @@ public class VueControleur extends JFrame implements Observer {
         jeu.addObserver(this);
 
     }
-
 
     private void ajouterEcouteurClavier() {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un
@@ -126,7 +125,32 @@ public class VueControleur extends JFrame implements Observer {
                 grilleJLabels.add(jlab);
             }
         }
-        add(grilleJLabels);
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jeu.resetLevel();
+            }
+        });
+
+        JButton backButton = new JButton("Back to Choose Level");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                LevelSelector levelSelector = new LevelSelector();
+                levelSelector.setVisible(true);
+            }
+        });
+
+        JPanel buttonPanel = new JPanel(); // create a panel for the buttons
+        buttonPanel.add(resetButton);
+        buttonPanel.add(backButton);
+
+        add(buttonPanel, BorderLayout.NORTH); // add the buttons at the top
+        add(grilleJLabels, BorderLayout.CENTER); // add the grid in the center
+        resetButton.setFocusable(false);
+        backButton.setFocusable(false);
     }
 
     /**

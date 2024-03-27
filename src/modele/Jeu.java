@@ -67,7 +67,6 @@ public class Jeu extends Observable {
                 }
             }
         }
-
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
 
@@ -75,6 +74,9 @@ public class Jeu extends Observable {
                     Bloc b = new Bloc(this, grilleEntites[i][j]);
                 }
                 if (data[i][j] == 4) {
+                    Bloc b = new Bloc(this, grilleEntites[i][j]);
+                }
+                if (data[i][j] == 5) {
                     heros = new Heros(this, grilleEntites[i][j]);
                 }
             }
@@ -96,7 +98,7 @@ public class Jeu extends Observable {
             for (int j = 0; j < SIZE_Y; j++) {
                 if (grilleEntites[i][j] instanceof Objectif) {
                     Objectif obj = (Objectif) grilleEntites[i][j];
-                    if (obj.hasBlock()) { // Check if the objective has a block
+                    if (obj.hasBlock()) {
                         boxesOnObjectifs++;
                     }
                 }
@@ -175,6 +177,17 @@ public class Jeu extends Observable {
         }
 
         return retour;
+    }
+
+    public void resetLevel() {
+        totalObjectifs = 0;
+        boxesOnObjectifs = 0;
+        heros = null;
+        map.clear();
+        grilleEntites = new Case[SIZE_X][SIZE_Y];
+        initialisationNiveau();
+        setChanged();
+        notifyObservers();
     }
 
 }

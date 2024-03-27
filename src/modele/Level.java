@@ -31,7 +31,7 @@ public class Level {
             }
 
             // Set player position
-            levelMap[playerRow][playerCol] = 4;
+            levelMap[playerRow][playerCol] = 5;
 
             return levelMap;
         } catch (IOException e) {
