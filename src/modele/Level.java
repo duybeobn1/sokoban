@@ -11,7 +11,7 @@ public class Level {
     public static int[][] loadLevel(String filename) {
         try {
             // Read map dimensions
-            File file = new File("res/levels/2.txt");
+            File file = new File(filename);
             Scanner sc = new Scanner(file);
 
             int cols = sc.nextInt();
