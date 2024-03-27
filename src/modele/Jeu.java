@@ -52,7 +52,11 @@ public class Jeu extends Observable {
     private void initialisationNiveau() {
 
         int data[][] = loadLevel("res/levels/" + level + ".txt");
-
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                addCase(new Vide(this), i, j);
+            }
+        }
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
                 if (data[i][j] == 0) {
