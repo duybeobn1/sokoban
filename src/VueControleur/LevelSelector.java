@@ -15,12 +15,16 @@ public class LevelSelector extends JFrame {
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         add(Box.createRigidArea(new Dimension(0, 50)));
+        int gridRows = 6;
+        int gridColumns = 5;
+        JPanel panel = new JPanel(new GridLayout(gridRows, gridColumns));
 
         // Add Level-select buttons
-        addButton("Level 0", e-> loadLevel(0));
-        addButton("Level 1", e -> loadLevel(1));
-        addButton("Level 2", e -> loadLevel(2));
-        addButton("Level 3", e -> loadLevel(3));
+        for (int i = 0; i < 30; i++) {
+            final int level = i;   // Final copy of i to use inside lambda
+            panel.add(addButton("Level " + (i+1), e -> loadLevel(level)));
+        }
+        getContentPane().add(panel);
 
         add(Box.createRigidArea(new Dimension(0, 50)));
 
@@ -32,8 +36,8 @@ public class LevelSelector extends JFrame {
 
     private JButton addButton(String text, ActionListener listener) {
         JButton button = new JButton(text);
-        button.setMaximumSize(new Dimension(400, 50));
-        button.setFont(new Font("Arial", Font.BOLD, 20));
+        button.setMaximumSize(new Dimension(100, 30)); // Modify button size
+        button.setFont(new Font("Arial", Font.BOLD, 13)); // Modify font size
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(listener);
         add(button);

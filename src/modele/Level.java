@@ -1,39 +1,36 @@
 package modele;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Level {
 
     public static int[][] loadLevel(String filename) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+        try {
             // Read map dimensions
-            String[] dimensions = br.readLine().split(" ");
-            int rows = Integer.parseInt(dimensions[0]);
-            int cols = Integer.parseInt(dimensions[1]);
+            File file = new File("res/levels/2.txt");
+            Scanner sc = new Scanner(file);
 
-            // Create level map
-            int[][] levelMap = new int[rows][cols];
+            int cols = sc.nextInt();
+            int rows = sc.nextInt();
 
-            // Read player position
-            String[] playerPos = br.readLine().split(" ");
-            int playerRow = Integer.parseInt(playerPos[0]);
-            int playerCol = Integer.parseInt(playerPos[1]);
+            int targetRow = sc.nextInt() ;
+            int targetCol = sc.nextInt() ;
 
-            // Read level map data
-            for (int row = 0; row < rows; row++) {
-                String[] tokens = br.readLine().split(" ");
-                for (int col = 0; col < cols; col++) {
-                    if (col < tokens.length) { // Make sure the column exists in this row
-                        levelMap[row][col] = Integer.parseInt(tokens[col]);
-                    }
+            int [][] matrix = new int[rows][cols];
+            for(int i=0; i<rows; i++) {
+                for(int j=0; j<cols; j++) {
+                    matrix[i][j] = sc.nextInt();
                 }
             }
 
-            // Set player position
-            levelMap[playerRow][playerCol] = 5;
-
-            return levelMap;
+            matrix[targetRow][targetCol] = 5;
+    
+            return matrix;
+    
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -49,8 +46,4 @@ public class Level {
         }
     }
 
-    // public static void main(String[] args) {
-    //     int[][] x = loadLevel("res/levels/3.txt");
-    //     printLevel(x);
-    // }
 }

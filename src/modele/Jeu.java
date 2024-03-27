@@ -11,8 +11,8 @@ import java.util.Observable;
 
 public class Jeu extends Observable {
 
-    public static final int SIZE_X = 16;
-    public static final int SIZE_Y = 16;
+    public static final int SIZE_X = 10;
+    public static final int SIZE_Y = 10;
 
     private int level;
     private int totalObjectifs = 0;
@@ -78,6 +78,7 @@ public class Jeu extends Observable {
                     Bloc b = new Bloc(this, grilleEntites[i][j]);
                 }
                 if (data[i][j] == 4) {
+                    addCase(new Objectif(this), i, j);
                     Bloc b = new Bloc(this, grilleEntites[i][j]);
                 }
                 if (data[i][j] == 5) {

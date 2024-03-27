@@ -42,6 +42,7 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoMur;
     private ImageIcon icoBloc;
     private ImageIcon icoObjectif;
+    private ImageIcon icoBlocObj;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
@@ -57,6 +58,7 @@ public class VueControleur extends JFrame implements Observer {
         mettreAJourAffichage();
         ajouterEcouteurClavier();
         jeu.addObserver(this);
+        pack();
 
     }
 
@@ -68,15 +70,19 @@ public class VueControleur extends JFrame implements Observer {
                 switch (e.getKeyCode()) { // on regarde quelle touche a été pressée
 
                     case KeyEvent.VK_LEFT:
+                        icoHero = chargerIcone("res/player/left.png");
                         jeu.deplacerHeros(Direction.gauche);
                         break;
                     case KeyEvent.VK_RIGHT:
+                        icoHero = chargerIcone("res/player/right.png");
                         jeu.deplacerHeros(Direction.droite);
                         break;
                     case KeyEvent.VK_DOWN:
+                        icoHero = chargerIcone("res/player/front.png");
                         jeu.deplacerHeros(Direction.bas);
                         break;
                     case KeyEvent.VK_UP:
+                        icoHero = chargerIcone("res/player/back.png");
                         jeu.deplacerHeros(Direction.haut);
                         break;
 
@@ -86,11 +92,12 @@ public class VueControleur extends JFrame implements Observer {
     }
 
     private void chargerLesIcones() {
-        icoHero = chargerIcone("Images/Pacman.png");
-        icoVide = chargerIcone("Images/Vide.png");
-        icoMur = chargerIcone("Images/Mur.png");
-        icoBloc = chargerIcone("Images/Colonne.png");
-        icoObjectif = chargerIcone("Images/Objectif.png");
+        icoHero = chargerIcone("res/player/front.png");
+        icoVide = chargerIcone("res/blocks/ground.png");
+        icoMur = chargerIcone("res/blocks/redBrick.png");
+        icoBloc = chargerIcone("res/blocks/boxOff.png");
+        icoObjectif = chargerIcone("res/blocks/spot.png");
+        icoBlocObj = chargerIcone("res/blocks/boxOn.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -109,7 +116,7 @@ public class VueControleur extends JFrame implements Observer {
     private void placerLesComposantsGraphiques() {
 
         setTitle("Sokoban");
-        setSize(400, 250);
+        setSize(670, 670);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
         JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases
@@ -133,7 +140,7 @@ public class VueControleur extends JFrame implements Observer {
             }
         });
 
-        JButton backButton = new JButton("Back to Choose Level");
+        JButton backButton = new JButton("Back to choose level");
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -147,10 +154,13 @@ public class VueControleur extends JFrame implements Observer {
         buttonPanel.add(resetButton);
         buttonPanel.add(backButton);
 
-        add(buttonPanel, BorderLayout.NORTH); // add the buttons at the top
-        add(grilleJLabels, BorderLayout.CENTER); // add the grid in the center
         resetButton.setFocusable(false);
         backButton.setFocusable(false);
+
+        getContentPane().setLayout(new BorderLayout());
+
+        getContentPane().add(buttonPanel, BorderLayout.NORTH);
+        getContentPane().add(grilleJLabels, BorderLayout.CENTER);
     }
 
     /**
@@ -172,7 +182,11 @@ public class VueControleur extends JFrame implements Observer {
                         if (c.getEntite() instanceof Heros) {
                             tabJLabel[x][y].setIcon(icoHero);
                         } else if (c.getEntite() instanceof Bloc) {
-                            tabJLabel[x][y].setIcon(icoBloc);
+                            if (c instanceof Objectif) {
+                                tabJLabel[x][y].setIcon(icoBlocObj);
+                            } else {
+                                tabJLabel[x][y].setIcon(icoBloc);
+                            }
                         }
                     } else {
                         if (jeu.getGrille()[x][y] instanceof Mur) {
