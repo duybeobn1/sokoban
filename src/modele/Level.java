@@ -18,11 +18,22 @@ public class Level {
             int rows = sc.nextInt();
 
             int targetRow = sc.nextInt() ;
+            System.out.println(targetRow);
             int targetCol = sc.nextInt() ;
-
-            int [][] matrix = new int[rows][cols];
-            for(int i=0; i<rows; i++) {
-                for(int j=0; j<cols; j++) {
+            System.out.println(targetCol);
+            int bigger;
+            int smaller;
+            if(rows < cols) {
+                bigger = cols;
+                smaller = rows;
+            }
+            else {
+                bigger = rows;
+                smaller = cols;
+            }
+            int [][] matrix = new int[bigger][smaller];
+            for(int i=0; i<bigger; i++) {
+                for(int j=0; j<smaller; j++) {
                     matrix[i][j] = sc.nextInt();
                 }
             }

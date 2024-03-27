@@ -80,6 +80,7 @@ public class Jeu extends Observable {
                 if (data[i][j] == 4) {
                     addCase(new Objectif(this), i, j);
                     Bloc b = new Bloc(this, grilleEntites[i][j]);
+                    totalObjectifs++;
                 }
                 if (data[i][j] == 5) {
                     heros = new Heros(this, grilleEntites[i][j]);
@@ -118,30 +119,38 @@ public class Jeu extends Observable {
      */
     public boolean deplacerEntite(Entite e, Direction d) {
         boolean retour = true;
-
+    
         Point pCourant = map.get(e.getCase());
-
+    
         Point pCible = calculerPointCible(pCourant, d);
-
+    
         if (contenuDansGrille(pCible)) {
             Entite eCible = caseALaPosition(pCible).getEntite();
+    
             if (eCible != null) {
+                Point pNext = calculerPointCible(pCible, d); // calculate the position of the next cell in the same direction
+                if (contenuDansGrille(pNext)) {
+                    Entite eNext = caseALaPosition(pNext).getEntite(); // get the entity in the next cell
+                    if (eNext != null) { // if there is an entity in the next cell, prevent the move
+                        return false;
+                    }
+                }
                 eCible.pousser(d);
             }
-
+    
             // si la case est libérée
             if (caseALaPosition(pCible).peutEtreParcouru()) {
                 e.getCase().quitterLaCase();
                 caseALaPosition(pCible).entrerSurLaCase(e);
-
+    
             } else {
                 retour = false;
             }
-
+    
         } else {
             retour = false;
         }
-
+    
         return retour;
     }
 
