@@ -18,20 +18,20 @@ public class Level {
             int rows = sc.nextInt();
 
             int targetRow = sc.nextInt() ;
-            System.out.println(targetRow);
             int targetCol = sc.nextInt() ;
-            System.out.println(targetCol);
             int bigger;
             int smaller;
+            int matrix[][];
             if(rows < cols) {
                 bigger = cols;
                 smaller = rows;
+                matrix = new int[bigger][smaller];
             }
             else {
                 bigger = rows;
                 smaller = cols;
+                matrix = new int[smaller][bigger];
             }
-            int [][] matrix = new int[bigger][smaller];
             for(int i=0; i<bigger; i++) {
                 for(int j=0; j<smaller; j++) {
                     matrix[i][j] = sc.nextInt();

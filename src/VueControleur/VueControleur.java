@@ -16,6 +16,8 @@ import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.*;
 
 import modele.*;
@@ -47,11 +49,19 @@ public class VueControleur extends JFrame implements Observer {
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
 
+
+    public Timer timer;
+    public int secondes;
+
     public VueControleur(Jeu _jeu) {
 
         sizeX = jeu.SIZE_X;
         sizeY = _jeu.SIZE_Y;
         jeu = _jeu;
+
+        timer = new Timer();
+        secondes = 0;
+
 
         chargerLesIcones();
         placerLesComposantsGraphiques();
@@ -59,6 +69,8 @@ public class VueControleur extends JFrame implements Observer {
         ajouterEcouteurClavier();
         jeu.addObserver(this);
         pack();
+
+        setLocationRelativeTo(null);
 
     }
 
@@ -116,7 +128,7 @@ public class VueControleur extends JFrame implements Observer {
     private void placerLesComposantsGraphiques() {
 
         setTitle("Sokoban");
-        setSize(670, 670);
+        setSize(400, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
         JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases
@@ -180,7 +192,7 @@ public class VueControleur extends JFrame implements Observer {
 
                     if (e != null) {
                         if (c.getEntite() instanceof Heros) {
-                            tabJLabel[x][y].setIcon(icoHero);
+                            tabJLabel[x][y].setIcon(new CompoundIcon(icoVide, icoHero));
                         } else if (c.getEntite() instanceof Bloc) {
                             if (c instanceof Objectif) {
                                 tabJLabel[x][y].setIcon(icoBlocObj);
@@ -194,7 +206,7 @@ public class VueControleur extends JFrame implements Observer {
                         } else if (jeu.getGrille()[x][y] instanceof Vide) {
                             tabJLabel[x][y].setIcon(icoVide);
                         } else if (jeu.getGrille()[x][y] instanceof Objectif) {
-                            tabJLabel[x][y].setIcon(icoObjectif);
+                            tabJLabel[x][y].setIcon(new CompoundIcon(icoVide, icoObjectif));
                         }
                     }
 
@@ -209,6 +221,7 @@ public class VueControleur extends JFrame implements Observer {
         mettreAJourAffichage();
         jeu.updateBoxesOnObjectifs(); // Update the count of boxes on objectives
         if (jeu.isWinConditionMet()) { // Check if the win condition is met
+            timer.cancel();
             System.out.println("Congratulations! You won the game!");
         }
 
