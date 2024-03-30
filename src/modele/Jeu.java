@@ -14,6 +14,8 @@ public class Jeu extends Observable {
     public static final int SIZE_X = 10;
     public static final int SIZE_Y = 10;
 
+    public int compteurPas = 0;
+
     private int level;
     private int totalObjectifs = 0;
     private int boxesOnObjectifs = 0;
@@ -119,38 +121,31 @@ public class Jeu extends Observable {
      */
     public boolean deplacerEntite(Entite e, Direction d) {
         boolean retour = true;
-    
+
         Point pCourant = map.get(e.getCase());
-    
+
         Point pCible = calculerPointCible(pCourant, d);
-    
+
         if (contenuDansGrille(pCible)) {
             Entite eCible = caseALaPosition(pCible).getEntite();
-    
             if (eCible != null) {
-                Point pNext = calculerPointCible(pCible, d); // calculate the position of the next cell in the same direction
-                if (contenuDansGrille(pNext)) {
-                    Entite eNext = caseALaPosition(pNext).getEntite(); // get the entity in the next cell
-                    if (eNext != null) { // if there is an entity in the next cell, prevent the move
-                        return false;
-                    }
-                }
                 eCible.pousser(d);
             }
-    
+
             // si la case est libérée
             if (caseALaPosition(pCible).peutEtreParcouru()) {
+                if(eCible != null){compteurPas--;}
+                compteurPas++;
                 e.getCase().quitterLaCase();
                 caseALaPosition(pCible).entrerSurLaCase(e);
-    
+
             } else {
                 retour = false;
             }
-    
+
         } else {
             retour = false;
         }
-    
         return retour;
     }
 

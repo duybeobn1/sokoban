@@ -6,9 +6,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.TimerTask;
 
 public class LevelSelector extends JFrame {
+
+static int totalTime = 0;
+JLabel timerLabel;
+
+
     public LevelSelector() {
+
         setTitle("Level Selector");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 400);
@@ -30,8 +37,13 @@ public class LevelSelector extends JFrame {
 
         // Add back button
         addButton("Back", e -> back());
-
+        timerLabel = new JLabel("Total time: 0 seconds");
+        timerLabel.setMaximumSize(new Dimension(100, 30));
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(this.timerLabel);
         setLocationRelativeTo(null);
+
     }
 
     private JButton addButton(String text, ActionListener listener) {
@@ -45,10 +57,11 @@ public class LevelSelector extends JFrame {
     }
 
     private void loadLevel(int level) {
-        // load the selected level
+
         dispose();
         Jeu jeu = new Jeu(level);
         VueControleur vc = new VueControleur(jeu);
+        vc.startAndTrackTime();
         vc.setVisible(true);
     }
 

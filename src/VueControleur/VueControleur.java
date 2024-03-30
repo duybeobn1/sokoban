@@ -46,6 +46,11 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoObjectif;
     private ImageIcon icoBlocObj;
 
+
+    private JPanel buttonPanel;
+    private JLabel timerLabel;
+
+    private JLabel timeLabel;
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
 
@@ -62,16 +67,25 @@ public class VueControleur extends JFrame implements Observer {
         timer = new Timer();
         secondes = 0;
 
-
+        
         chargerLesIcones();
         placerLesComposantsGraphiques();
         mettreAJourAffichage();
         ajouterEcouteurClavier();
         jeu.addObserver(this);
-        pack();
+        pack();  
 
-        setLocationRelativeTo(null);
+    }
 
+    public void startAndTrackTime() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                secondes++;
+                // Update the text of timerLabel directly
+                timerLabel.setText("Time: " + secondes + " seconds");
+            }
+        }, 1000, 1000);  // schedule every 1 second
     }
 
     private void ajouterEcouteurClavier() {
@@ -161,11 +175,14 @@ public class VueControleur extends JFrame implements Observer {
                 levelSelector.setVisible(true);
             }
         });
+        timerLabel = new JLabel("Time: 0 seconds");
 
         JPanel buttonPanel = new JPanel(); // create a panel for the buttons
         buttonPanel.add(resetButton);
         buttonPanel.add(backButton);
 
+        buttonPanel.add(timerLabel);
+        
         resetButton.setFocusable(false);
         backButton.setFocusable(false);
 
@@ -173,6 +190,9 @@ public class VueControleur extends JFrame implements Observer {
 
         getContentPane().add(buttonPanel, BorderLayout.NORTH);
         getContentPane().add(grilleJLabels, BorderLayout.CENTER);
+
+
+        
     }
 
     /**
