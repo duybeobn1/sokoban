@@ -17,31 +17,21 @@ public class Level {
             int cols = sc.nextInt();
             int rows = sc.nextInt();
 
-            int targetRow = sc.nextInt() ;
-            int targetCol = sc.nextInt() ;
-            int bigger;
-            int smaller;
-            int matrix[][];
-            if(rows < cols) {
-                bigger = cols;
-                smaller = rows;
-                matrix = new int[bigger][smaller];
-            }
-            else {
-                bigger = rows;
-                smaller = cols;
-                matrix = new int[smaller][bigger];
-            }
-            for(int i=0; i<bigger; i++) {
-                for(int j=0; j<smaller; j++) {
+            int targetRow = sc.nextInt();
+            int targetCol = sc.nextInt();
+
+            int[][] matrix = new int[rows][cols]; // Créez la matrice avec les bonnes dimensions
+
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
                     matrix[i][j] = sc.nextInt();
                 }
             }
 
             matrix[targetRow][targetCol] = 5;
-    
+
             return matrix;
-    
+
         } catch (IOException e) {
             e.printStackTrace();
             return null;
