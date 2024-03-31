@@ -5,6 +5,8 @@
  */
 package modele;
 
+import java.awt.Point;
+
 /**
  * Héros du jeu
  */

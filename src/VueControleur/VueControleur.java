@@ -177,12 +177,20 @@ public class VueControleur extends JFrame implements Observer {
         });
         timerLabel = new JLabel("Time: 0 seconds");
 
+        JButton undoButton = new JButton("Undo");
+
+        undoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
         JPanel buttonPanel = new JPanel(); // create a panel for the buttons
         buttonPanel.add(resetButton);
         buttonPanel.add(backButton);
 
         buttonPanel.add(timerLabel);
-        
+        buttonPanel.add(undoButton);
+        undoButton.setFocusable(false);
         resetButton.setFocusable(false);
         backButton.setFocusable(false);
 

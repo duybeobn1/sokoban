@@ -8,6 +8,7 @@ package modele;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Observable;
+import java.util.Stack;
 
 public class Jeu extends Observable {
 
@@ -19,6 +20,9 @@ public class Jeu extends Observable {
     private int level;
     private int totalObjectifs = 0;
     private int boxesOnObjectifs = 0;
+
+
+    public Stack<Point> heroPastLocations = new Stack<>();
 
     private Heros heros;
 
@@ -41,10 +45,13 @@ public class Jeu extends Observable {
     }
 
     public void deplacerHeros(Direction d) {
+        heroPastLocations.push(map.get(heros.getCase()));
         heros.avancerDirectionChoisie(d);
         setChanged();
         notifyObservers();
     }
+    
+
 
     public int[][] loadLevel(String fileName) {
         int[][] data = Level.loadLevel(fileName);
@@ -91,6 +98,8 @@ public class Jeu extends Observable {
         }
     }
 
+
+
     private void addCase(Case e, int x, int y) {
         grilleEntites[x][y] = e;
         map.put(e, new Point(x, y));
@@ -121,31 +130,36 @@ public class Jeu extends Observable {
      */
     public boolean deplacerEntite(Entite e, Direction d) {
         boolean retour = true;
-
+        
         Point pCourant = map.get(e.getCase());
-
+        
         Point pCible = calculerPointCible(pCourant, d);
-
+        
         if (contenuDansGrille(pCible)) {
             Entite eCible = caseALaPosition(pCible).getEntite();
             if (eCible != null) {
-                eCible.pousser(d);
+                Point pNext = calculerPointCible(pCible, d);
+                
+                // Check if the next cell is within the grid and can be passed through
+                if (contenuDansGrille(pNext) && caseALaPosition(pNext).peutEtreParcouru()) {
+                    eCible.pousser(d);
+                } else {
+                    retour = false;
+                }
             }
-
-            // si la case est libérée
-            if (caseALaPosition(pCible).peutEtreParcouru()) {
+            
+            if (retour && caseALaPosition(pCible).peutEtreParcouru()) {
                 if(eCible != null){compteurPas--;}
                 compteurPas++;
                 e.getCase().quitterLaCase();
                 caseALaPosition(pCible).entrerSurLaCase(e);
-
             } else {
                 retour = false;
             }
-
         } else {
             retour = false;
         }
+        
         return retour;
     }
 
