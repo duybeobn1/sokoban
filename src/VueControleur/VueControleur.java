@@ -181,6 +181,7 @@ public class VueControleur extends JFrame implements Observer {
 
         undoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                jeu.undoHeroMove();
             }
         });
 

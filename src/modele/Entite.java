@@ -34,5 +34,8 @@ public abstract class Entite extends Obj {
 
         return jeu.deplacerEntite(this, d);
     }
+    public void moveOpposite(Direction d) {
+        avancerDirectionChoisie(d.opposite());
+    }
 
 }

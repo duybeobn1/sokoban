@@ -11,6 +11,9 @@ import java.util.Observable;
 import java.util.Stack;
 
 public class Jeu extends Observable {
+    private Stack<Move> heroMoveStack  = new Stack<>();
+    private Stack<Move> blockMoveStack = new Stack<>(); // Stack for block movements
+
 
     public static final int SIZE_X = 10;
     public static final int SIZE_Y = 10;
@@ -20,9 +23,6 @@ public class Jeu extends Observable {
     private int level;
     private int totalObjectifs = 0;
     private int boxesOnObjectifs = 0;
-
-
-    public Stack<Point> heroPastLocations = new Stack<>();
 
     private Heros heros;
 
@@ -45,12 +45,12 @@ public class Jeu extends Observable {
     }
 
     public void deplacerHeros(Direction d) {
-        heroPastLocations.push(map.get(heros.getCase()));
-        heros.avancerDirectionChoisie(d);
-        setChanged();
-        notifyObservers();
+        if (deplacerEntite(heros, d)) {
+            heroMoveStack.push(new Move(heros, d.opposite())); // Push the reverse of the move onto the stack
+            setChanged();
+            notifyObservers();
+        }
     }
-    
 
 
     public int[][] loadLevel(String fileName) {
@@ -98,8 +98,6 @@ public class Jeu extends Observable {
         }
     }
 
-
-
     private void addCase(Case e, int x, int y) {
         grilleEntites[x][y] = e;
         map.put(e, new Point(x, y));
@@ -129,17 +127,19 @@ public class Jeu extends Observable {
      * Sinon, rien n'est fait.
      */
     public boolean deplacerEntite(Entite e, Direction d) {
+
+        
         boolean retour = true;
-        
+
         Point pCourant = map.get(e.getCase());
-        
+
         Point pCible = calculerPointCible(pCourant, d);
-        
+
         if (contenuDansGrille(pCible)) {
             Entite eCible = caseALaPosition(pCible).getEntite();
             if (eCible != null) {
                 Point pNext = calculerPointCible(pCible, d);
-                
+
                 // Check if the next cell is within the grid and can be passed through
                 if (contenuDansGrille(pNext) && caseALaPosition(pNext).peutEtreParcouru()) {
                     eCible.pousser(d);
@@ -147,9 +147,11 @@ public class Jeu extends Observable {
                     retour = false;
                 }
             }
-            
+
             if (retour && caseALaPosition(pCible).peutEtreParcouru()) {
-                if(eCible != null){compteurPas--;}
+                if (eCible != null) {
+                    compteurPas--;
+                }
                 compteurPas++;
                 e.getCase().quitterLaCase();
                 caseALaPosition(pCible).entrerSurLaCase(e);
@@ -159,9 +161,10 @@ public class Jeu extends Observable {
         } else {
             retour = false;
         }
-        
+
         return retour;
     }
+
 
     private Point calculerPointCible(Point pCourant, Direction d) {
         Point pCible = null;
@@ -213,4 +216,35 @@ public class Jeu extends Observable {
         notifyObservers();
     }
 
+    public void undoHeroMove() {
+        if (!heroMoveStack.isEmpty()) {
+            Move lastMove = heroMoveStack.pop();
+            lastMove.getDirection().opposite();
+            deplacerEntite(lastMove.getEntity(), lastMove.direction);
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    
+    
+    
+    private class Move {
+        private Entite entity;
+        private Direction direction;
+    
+        public Move(Entite entity, Direction direction) {
+            this.entity = entity;
+            this.direction = direction;
+        }
+    
+        public Entite getEntity() {
+            return entity;
+        }
+    
+        public Direction getDirection() {
+            return direction;
+        }
+
+    }
 }

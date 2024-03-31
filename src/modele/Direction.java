@@ -10,5 +10,21 @@ package modele;
  *
  */
 public enum Direction {
-    haut, bas, gauche, droite
-}
+        haut, bas, gauche, droite;
+    
+        public Direction opposite() {
+            switch (this) {
+                case haut:
+                    return bas;
+                case bas:
+                    return haut;
+                case gauche:
+                    return droite;
+                case droite:
+                    return gauche;
+                default:
+                    throw new IllegalArgumentException("Unexpected direction: " + this);
+            }
+        }
+    }
+
