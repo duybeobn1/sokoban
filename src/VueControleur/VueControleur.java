@@ -46,14 +46,12 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoObjectif;
     private ImageIcon icoBlocObj;
 
-
     private JPanel buttonPanel;
     private JLabel timerLabel;
 
     private JLabel timeLabel;
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
-
 
     public Timer timer;
     public int secondes;
@@ -67,13 +65,12 @@ public class VueControleur extends JFrame implements Observer {
         timer = new Timer();
         secondes = 0;
 
-        
         chargerLesIcones();
         placerLesComposantsGraphiques();
         mettreAJourAffichage();
         ajouterEcouteurClavier();
         jeu.addObserver(this);
-        pack();  
+        pack();
 
     }
 
@@ -85,7 +82,7 @@ public class VueControleur extends JFrame implements Observer {
                 // Update the text of timerLabel directly
                 timerLabel.setText("Time: " + secondes + " seconds");
             }
-        }, 1000, 1000);  // schedule every 1 second
+        }, 1000, 1000); // schedule every 1 second
     }
 
     private void ajouterEcouteurClavier() {
@@ -200,8 +197,6 @@ public class VueControleur extends JFrame implements Observer {
         getContentPane().add(buttonPanel, BorderLayout.NORTH);
         getContentPane().add(grilleJLabels, BorderLayout.CENTER);
 
-
-        
     }
 
     /**
@@ -245,13 +240,43 @@ public class VueControleur extends JFrame implements Observer {
         }
     }
 
+    public void showEndGameOptions() {
+        String[] options = new String[] { "Play Again", "Next Level", "Main Menu" };
+        int response = JOptionPane.showOptionDialog(null,
+                "Congratulations! You won the game! What would you like to do next?", "End Game",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);
+
+        switch (response) {
+            case 0: 
+                jeu.resetLevel();
+                break;
+            case 1: 
+                if(jeu.getLevel() >= 30) {
+                    JOptionPane.showMessageDialog(null, "You finished all the game");
+                }
+                else {
+                    LevelSelector vc = new LevelSelector();
+                    vc.loadLevel(jeu.getLevel()+1);
+                }
+                break;
+            case 2: 
+                this.dispose(); 
+                StartMenu startMenu = new StartMenu(); 
+                startMenu.setVisible(true); 
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         mettreAJourAffichage();
         jeu.updateBoxesOnObjectifs(); // Update the count of boxes on objectives
         if (jeu.isWinConditionMet()) { // Check if the win condition is met
             timer.cancel();
-            System.out.println("Congratulations! You won the game!");
+            showEndGameOptions();
         }
 
         /*

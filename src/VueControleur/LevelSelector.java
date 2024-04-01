@@ -56,8 +56,7 @@ JLabel timerLabel;
         return button;
     }
 
-    private void loadLevel(int level) {
-
+    void loadLevel(int level) {
         dispose();
         Jeu jeu = new Jeu(level);
         VueControleur vc = new VueControleur(jeu);

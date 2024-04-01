@@ -35,7 +35,9 @@ public class Jeu extends Observable {
         this.level = level;
         initialisationNiveau();
     }
-
+    public int getLevel() {
+        return level;
+    }
     public Case[][] getGrille() {
         return grilleEntites;
     }
