@@ -157,6 +157,10 @@ public class Jeu extends Observable {
                 compteurPas++;
                 e.getCase().quitterLaCase();
                 caseALaPosition(pCible).entrerSurLaCase(e);
+
+                if (e instanceof Bloc) {
+                    blockMoveStack.push(new Move(e, d.opposite()));
+                }
             } else {
                 retour = false;
             }
@@ -220,9 +224,17 @@ public class Jeu extends Observable {
 
     public void undoHeroMove() {
         if (!heroMoveStack.isEmpty()) {
-            Move lastMove = heroMoveStack.pop();
-            lastMove.getDirection().opposite();
-            deplacerEntite(lastMove.getEntity(), lastMove.direction);
+            Move lastHeroMove = heroMoveStack.pop();
+            lastHeroMove.getDirection().opposite();
+            deplacerEntite(lastHeroMove.getEntity(), lastHeroMove.direction);
+    
+            // Undo blocks' moves
+            if (!blockMoveStack.isEmpty()) {
+                Move lastBlockMove = blockMoveStack.pop();
+                lastBlockMove.getDirection().opposite();
+                deplacerEntite(lastBlockMove.getEntity(), lastBlockMove.direction);
+            }
+    
             setChanged();
             notifyObservers();
         }
