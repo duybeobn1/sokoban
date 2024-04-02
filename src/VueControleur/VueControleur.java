@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -48,6 +49,7 @@ public class VueControleur extends JFrame implements Observer {
 
     private JPanel buttonPanel;
     private JLabel timerLabel;
+    private JLabel pas;
 
     private JLabel timeLabel;
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
@@ -57,14 +59,11 @@ public class VueControleur extends JFrame implements Observer {
     public int secondes;
 
     public VueControleur(Jeu _jeu) {
-
         sizeX = jeu.SIZE_X;
         sizeY = _jeu.SIZE_Y;
         jeu = _jeu;
-
         timer = new Timer();
         secondes = 0;
-
         chargerLesIcones();
         placerLesComposantsGraphiques();
         mettreAJourAffichage();
@@ -83,6 +82,16 @@ public class VueControleur extends JFrame implements Observer {
                 timerLabel.setText("Time: " + secondes + " seconds");
             }
         }, 1000, 1000); // schedule every 1 second
+    }
+
+    public void startTrackingPas() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                // Update the text of timerLabel directly
+                pas.setText("Pas: " + jeu.getCompteurPas());
+            }
+        }, 0, 1); // schedule every 1 second
     }
 
     private void ajouterEcouteurClavier() {
@@ -173,6 +182,7 @@ public class VueControleur extends JFrame implements Observer {
             }
         });
         timerLabel = new JLabel("Time: 0 seconds");
+        pas = new JLabel("Pas : 0");
 
         JButton undoButton = new JButton("Undo");
 
@@ -185,7 +195,7 @@ public class VueControleur extends JFrame implements Observer {
         JPanel buttonPanel = new JPanel(); // create a panel for the buttons
         buttonPanel.add(resetButton);
         buttonPanel.add(backButton);
-
+        buttonPanel.add(pas);
         buttonPanel.add(timerLabel);
         buttonPanel.add(undoButton);
         undoButton.setFocusable(false);
@@ -241,6 +251,8 @@ public class VueControleur extends JFrame implements Observer {
     }
 
     public void showEndGameOptions() {
+
+        writeHighscoreToFile();
         String[] options = new String[] { "Play Again", "Next Level", "Main Menu" };
         int response = JOptionPane.showOptionDialog(null,
                 "Congratulations! You won the game! What would you like to do next?", "End Game",
@@ -256,12 +268,12 @@ public class VueControleur extends JFrame implements Observer {
                     JOptionPane.showMessageDialog(null, "You finished all the game");
                 }
                 else {
-                    LevelSelector vc = new LevelSelector();
+                    LevelSelector vc =  new LevelSelector();
                     vc.loadLevel(jeu.getLevel()+1);
                 }
                 break;
             case 2: 
-                this.dispose(); 
+                dispose(); 
                 StartMenu startMenu = new StartMenu(); 
                 startMenu.setVisible(true); 
                 break;
@@ -269,7 +281,16 @@ public class VueControleur extends JFrame implements Observer {
                 break;
         }
     }
-
+    private void writeHighscoreToFile() {
+        try {
+            FileWriter writer = new FileWriter("src/VueControleur/highscores.txt", true); // Append mode
+            writer.write("\n Level: " + (jeu.getLevel()+1) + " Seconds: "+secondes + " Pas: " + jeu.getCompteurPas());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to write highscore to file.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     @Override
     public void update(Observable o, Object arg) {
         mettreAJourAffichage();

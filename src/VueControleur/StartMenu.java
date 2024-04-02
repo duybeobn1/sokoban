@@ -21,10 +21,6 @@ public class StartMenu extends JFrame {
         addButton("Start Game", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // dispose();
-                // Jeu jeu = new Jeu();
-                // VueControleur vc = new VueControleur(jeu);
-                // vc.setVisible(true);
                 dispose();
                 LevelSelector levelSelector = new LevelSelector();
                 levelSelector.setVisible(true);
@@ -33,13 +29,7 @@ public class StartMenu extends JFrame {
 
         add(Box.createRigidArea(new Dimension(0, 30)));
 
-        addButton("View Highscore", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String highscores = getHighscores();
-                JOptionPane.showMessageDialog(null, highscores, "Highscores", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
+        addButton("View Highscore", new HighScoreButtonHandler());
 
         add(Box.createRigidArea(new Dimension(0, 30)));
 

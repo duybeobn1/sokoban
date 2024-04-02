@@ -46,6 +46,10 @@ public class Jeu extends Observable {
         return heros;
     }
 
+    public int getCompteurPas() {
+        return compteurPas;
+    }
+
     public void deplacerHeros(Direction d) {
         if (deplacerEntite(heros, d)) {
             heroMoveStack.push(new Move(heros, d.opposite())); // Push the reverse of the move onto the stack
@@ -234,7 +238,6 @@ public class Jeu extends Observable {
                 lastBlockMove.getDirection().opposite();
                 deplacerEntite(lastBlockMove.getEntity(), lastBlockMove.direction);
             }
-    
             setChanged();
             notifyObservers();
         }

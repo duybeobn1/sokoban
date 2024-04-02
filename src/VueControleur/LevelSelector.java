@@ -61,6 +61,7 @@ JLabel timerLabel;
         Jeu jeu = new Jeu(level);
         VueControleur vc = new VueControleur(jeu);
         vc.startAndTrackTime();
+        vc.startTrackingPas();
         vc.setVisible(true);
     }
 
