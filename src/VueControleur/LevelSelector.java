@@ -26,16 +26,14 @@ JLabel timerLabel;
         int gridColumns = 5;
         JPanel panel = new JPanel(new GridLayout(gridRows, gridColumns));
 
-        // Add Level-select buttons
         for (int i = 0; i < 20; i++) {
-            final int level = i;   // Final copy of i to use inside lambda
+            final int level = i;   
             panel.add(addButton("Level " + (i+1), e -> loadLevel(level)));
         }
         getContentPane().add(panel);
 
         add(Box.createRigidArea(new Dimension(0, 50)));
 
-        // Add back button
         addButton("Back", e -> back());
         timerLabel = new JLabel();
         timerLabel.setMaximumSize(new Dimension(100, 30));
@@ -48,8 +46,8 @@ JLabel timerLabel;
 
     private JButton addButton(String text, ActionListener listener) {
         JButton button = new JButton(text);
-        button.setMaximumSize(new Dimension(100, 30)); // Modify button size
-        button.setFont(new Font("Arial", Font.BOLD, 13)); // Modify font size
+        button.setMaximumSize(new Dimension(350, 100)); 
+        button.setFont(new Font("Arial", Font.BOLD, 17)); 
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(listener);
         add(button);
