@@ -50,7 +50,9 @@ public class VueControleur extends JFrame implements Observer {
     private JPanel buttonPanel;
     private JLabel timerLabel;
     private JLabel pas;
+    public int undoCount = 0;
 
+    private JButton resetButton;
     private JLabel timeLabel;
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
@@ -164,10 +166,14 @@ public class VueControleur extends JFrame implements Observer {
                 grilleJLabels.add(jlab);
             }
         }
-        JButton resetButton = new JButton("Reset");
+        resetButton = new JButton("Reset");
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                pas.setText("Pas : 0");
+                timerLabel.setText("Time : 0 seconds");
+                secondes = 0;
+                undoCount = 0;
                 jeu.resetLevel();
             }
         });
@@ -181,14 +187,24 @@ public class VueControleur extends JFrame implements Observer {
                 levelSelector.setVisible(true);
             }
         });
-        timerLabel = new JLabel("Time: 0 seconds");
-        pas = new JLabel("Pas : 0");
+        timerLabel = new JLabel();
+        pas = new JLabel();
 
+        pas.setText("Pas : 0");
+        timerLabel.setText("Time : 0 seconds");
+        
         JButton undoButton = new JButton("Undo");
 
         undoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                jeu.undoHeroMove();
+                if(jeu.abletoUndo()) {
+                if (undoCount < 1) {
+                    jeu.undoHeroMove();
+                    undoCount++;
+                }}
+                else {
+                    JOptionPane.showMessageDialog(null, "Cannot undo the move.", "Error", JOptionPane.ERROR_MESSAGE); 
+                }
             }
         });
 
@@ -260,37 +276,45 @@ public class VueControleur extends JFrame implements Observer {
                 null, options, options[0]);
 
         switch (response) {
-            case 0: 
-                jeu.resetLevel();
+            case 0:
+                resetButton.doClick();
+                timer.cancel(); 
+                timer = new Timer(); 
+                startAndTrackTime(); 
+                startTrackingPas();
                 break;
-            case 1: 
-                if(jeu.getLevel() >= 30) {
+            case 1:
+                if (jeu.getLevel() >= 19) {
                     JOptionPane.showMessageDialog(null, "You finished all the game");
-                }
-                else {
-                    LevelSelector vc =  new LevelSelector();
-                    vc.loadLevel(jeu.getLevel()+1);
+                } else {
+                    dispose();
+                    LevelSelector vc = new LevelSelector();
+                    vc.loadLevel(jeu.getLevel() + 1);
                 }
                 break;
-            case 2: 
-                dispose(); 
-                StartMenu startMenu = new StartMenu(); 
-                startMenu.setVisible(true); 
+            case 2:
+                dispose();
+                StartMenu startMenu = new StartMenu();
+                startMenu.setVisible(true);
                 break;
             default:
                 break;
         }
     }
+
     private void writeHighscoreToFile() {
         try {
             FileWriter writer = new FileWriter("src/VueControleur/highscores.txt", true); // Append mode
-            writer.write("\n Level: " + (jeu.getLevel()+1) + " Seconds: "+secondes + " Pas: " + jeu.getCompteurPas());
+            writer.write(
+                    "\n Level: " + (jeu.getLevel() + 1) + " Seconds: " + secondes + " Pas: " + jeu.getCompteurPas());
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Failed to write highscore to file.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to write highscore to file.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
+
     @Override
     public void update(Observable o, Object arg) {
         mettreAJourAffichage();

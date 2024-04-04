@@ -27,7 +27,7 @@ JLabel timerLabel;
         JPanel panel = new JPanel(new GridLayout(gridRows, gridColumns));
 
         // Add Level-select buttons
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             final int level = i;   // Final copy of i to use inside lambda
             panel.add(addButton("Level " + (i+1), e -> loadLevel(level)));
         }
@@ -37,7 +37,7 @@ JLabel timerLabel;
 
         // Add back button
         addButton("Back", e -> back());
-        timerLabel = new JLabel("Total time: 0 seconds");
+        timerLabel = new JLabel();
         timerLabel.setMaximumSize(new Dimension(100, 30));
         timerLabel.setFont(new Font("Arial", Font.BOLD, 13));
         timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -1,6 +1,7 @@
 package VueControleur;
 import javax.swing.*;
 
+import modele.HighScoreButtonHandler;
 import modele.Jeu;
 
 import java.awt.*;

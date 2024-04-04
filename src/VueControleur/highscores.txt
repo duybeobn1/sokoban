@@ -1,3 +1,20 @@
 
- Level: 0 Seconds: 2 Pas: 10
- Level: 2 Seconds: 19 Pas: 99
+ Level: 1 Seconds: 2 Pas: 10
+ Level: 1 Seconds: 0 Pas: 10
+ Level: 1 Seconds: 3 Pas: 12
+ Level: 1 Seconds: 4 Pas: 10
+ Level: 1 Seconds: 2 Pas: 10
+ Level: 1 Seconds: 0 Pas: 12
+ Level: 1 Seconds: 0 Pas: 10
+ Level: 1 Seconds: 3 Pas: 10
+ Level: 1 Seconds: 2 Pas: 10
+ Level: 1 Seconds: 1 Pas: 10
+ Level: 1 Seconds: 2 Pas: 10
+ Level: 1 Seconds: 2 Pas: 11
+ Level: 1 Seconds: 0 Pas: 10
+ Level: 1 Seconds: 1 Pas: 10
+ Level: 1 Seconds: 0 Pas: 10
+ Level: 1 Seconds: 1 Pas: 10
+ Level: 1 Seconds: 2 Pas: 12
+ Level: 1 Seconds: 1 Pas: 10
+ Level: 1 Seconds: 11 Pas: 10

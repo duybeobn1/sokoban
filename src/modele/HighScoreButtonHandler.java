@@ -1,4 +1,4 @@
-package VueControleur;
+package modele;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +12,7 @@ public class HighScoreButtonHandler implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            String highscores = readHighscoresFromFile("src/VueControleur/highscores.txt");
+            String highscores = readHighscoresFromFile("res/highscores.txt");
             JOptionPane.showMessageDialog(null, highscores, "Highscores", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             ex.printStackTrace();

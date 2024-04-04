@@ -38,13 +38,4 @@ public class Level {
         }
     }
 
-    public static void printLevel(int[][] levelMap) {
-        for (int[] row : levelMap) {
-            for (int cell : row) {
-                System.out.print(cell + " ");
-            }
-            System.out.println();
-        }
-    }
-
 }

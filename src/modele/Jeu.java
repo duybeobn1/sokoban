@@ -45,6 +45,12 @@ public class Jeu extends Observable {
     public Heros getHeros() {
         return heros;
     }
+    public boolean abletoUndo() {
+        return heroMoveStack.size() >= 1;
+    }
+    public void resetCompteur() {
+        compteurPas = 0;
+    }
 
     public int getCompteurPas() {
         return compteurPas;
@@ -74,9 +80,7 @@ public class Jeu extends Observable {
         }
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
-                if (data[i][j] == 0) {
-                    addCase(new Vide(this), i, j);
-                } else if (data[i][j] == 1) {
+                 if (data[i][j] == 1) {
                     addCase(new Mur(this), i, j);
                 } else if (data[i][j] == 3) {
                     addCase(new Objectif(this), i, j);
@@ -216,6 +220,7 @@ public class Jeu extends Observable {
     }
 
     public void resetLevel() {
+        compteurPas = 0;
         totalObjectifs = 0;
         boxesOnObjectifs = 0;
         heros = null;
@@ -232,7 +237,7 @@ public class Jeu extends Observable {
             lastHeroMove.getDirection().opposite();
             deplacerEntite(lastHeroMove.getEntity(), lastHeroMove.direction);
     
-            // Undo blocks' moves
+            // Undo blocs
             if (!blockMoveStack.isEmpty()) {
                 Move lastBlockMove = blockMoveStack.pop();
                 lastBlockMove.getDirection().opposite();
