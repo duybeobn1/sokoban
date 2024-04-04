@@ -3,6 +3,8 @@ package VueControleur;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -71,8 +73,8 @@ public class VueControleur extends JFrame implements Observer {
         mettreAJourAffichage();
         ajouterEcouteurClavier();
         jeu.addObserver(this);
+        setLocation(getX() + 400, getY() + 70);
         pack();
-
     }
 
     public void startAndTrackTime() {
@@ -80,28 +82,25 @@ public class VueControleur extends JFrame implements Observer {
             @Override
             public void run() {
                 secondes++;
-                // Update the text of timerLabel directly
                 timerLabel.setText("Time: " + secondes + " seconds");
             }
-        }, 1000, 1000); // schedule every 1 second
+        }, 1000, 1000); 
     }
 
     public void startTrackingPas() {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                // Update the text of timerLabel directly
                 pas.setText("Pas: " + jeu.getCompteurPas());
             }
-        }, 0, 1); // schedule every 1 second
+        }, 0, 1); 
     }
 
     private void ajouterEcouteurClavier() {
-        addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un
-                                          // objet qui correspond au controleur dans MVC
+        addKeyListener(new KeyAdapter() { 
             @Override
             public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) { // on regarde quelle touche a été pressée
+                switch (e.getKeyCode()) { 
 
                     case KeyEvent.VK_LEFT:
                         icoHero = chargerIcone("res/player/left.png");
@@ -151,21 +150,41 @@ public class VueControleur extends JFrame implements Observer {
 
         setTitle("Sokoban");
         setSize(400, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases
-                                                                             // graphiques et les positionner sous la
-                                                                             // forme d'une grille
+        JPanel grilleJLabels = new JPanel(new GridBagLayout());
+
+        int topInset = 100;
+        int leftInset = 100;
+        int bottomInset = 100;
+        int rightInset = 100;
+        grilleJLabels.setBorder(BorderFactory.createEmptyBorder(topInset, leftInset, bottomInset, rightInset));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+
         tabJLabel = new JLabel[sizeX][sizeY];
 
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
                 JLabel jlab = new JLabel();
-                tabJLabel[x][y] = jlab; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique
-                                        // à celles-ci (voir mettreAJourAffichage() )
-                grilleJLabels.add(jlab);
+                tabJLabel[x][y] = jlab;
+                grilleJLabels.add(jlab, gbc);
+                gbc.gridx++;
             }
+            gbc.gridx = 0;
+            gbc.gridy++;
         }
+
+        getContentPane().setLayout(new BorderLayout());
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(grilleJLabels, BorderLayout.CENTER);
+
+
+
         resetButton = new JButton("Reset");
         resetButton.addActionListener(new ActionListener() {
             @Override
@@ -192,23 +211,23 @@ public class VueControleur extends JFrame implements Observer {
 
         pas.setText("Pas : 0");
         timerLabel.setText("Time : 0 seconds");
-        
+
         JButton undoButton = new JButton("Undo");
 
         undoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(jeu.abletoUndo()) {
-                if (undoCount < 1) {
-                    jeu.undoHeroMove();
-                    undoCount++;
-                }}
-                else {
-                    JOptionPane.showMessageDialog(null, "Cannot undo the move.", "Error", JOptionPane.ERROR_MESSAGE); 
+                if (jeu.abletoUndo()) {
+                    if (undoCount < 1) {
+                        jeu.undoHeroMove();
+                        undoCount++;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Cannot undo the move.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        JPanel buttonPanel = new JPanel(); // create a panel for the buttons
+        JPanel buttonPanel = new JPanel(); 
         buttonPanel.add(resetButton);
         buttonPanel.add(backButton);
         buttonPanel.add(pas);
@@ -278,9 +297,9 @@ public class VueControleur extends JFrame implements Observer {
         switch (response) {
             case 0:
                 resetButton.doClick();
-                timer.cancel(); 
-                timer = new Timer(); 
-                startAndTrackTime(); 
+                timer.cancel();
+                timer = new Timer();
+                startAndTrackTime();
                 startTrackingPas();
                 break;
             case 1:
@@ -318,8 +337,8 @@ public class VueControleur extends JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         mettreAJourAffichage();
-        jeu.updateBoxesOnObjectifs(); // Update the count of boxes on objectives
-        if (jeu.isWinConditionMet()) { // Check if the win condition is met
+        jeu.updateBoxesOnObjectifs(); 
+        if (jeu.isWinConditionMet()) { 
             timer.cancel();
             showEndGameOptions();
         }
