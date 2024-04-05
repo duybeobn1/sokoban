@@ -1,6 +1,0 @@
-
- Level: 1 Seconds: 9 Pas: 16
- Level: 20 Seconds: 23 Pas: 34
- Level: 1 Seconds: 9 Pas: 21
- Level: 1 Seconds: 11 Pas: 16
- Level: 1 Seconds: 8 Pas: 17

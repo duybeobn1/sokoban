@@ -64,6 +64,7 @@ JLabel timerLabel;
     }
 
     private void back() {
+        
         this.dispose(); // Close the current level selector window
         StartMenu startMenu = new StartMenu(); // Create a new start menu
         startMenu.setVisible(true); // Show the new start menu

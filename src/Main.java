@@ -1,4 +1,6 @@
 
+import java.io.File;
+
 import VueControleur.StartMenu;
 import VueControleur.VueControleur;
 import modele.Jeu;
