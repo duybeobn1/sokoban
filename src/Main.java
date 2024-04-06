@@ -13,11 +13,9 @@ import modele.Jeu;
 
 
 public class Main {
-    public static void main(String[] args) {
-        // Jeu jeu = new Jeu();
-        
+    public static void main(String[] args) {        
         StartMenu sm = new StartMenu();
         sm.setVisible(true);
 
     }
-}
+}   

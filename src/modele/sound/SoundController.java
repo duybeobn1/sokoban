@@ -1,13 +1,12 @@
-package VueControleur;
+package modele.sound;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.Class;
 
 public class SoundController {
     private Clip backgroundClip; // Variable pour stocker le clip de la musique de fond
@@ -16,11 +15,11 @@ public class SoundController {
     public SoundController() {
         soundEffects = new HashMap<>();
     }
+        
 
     public void playBackgroundMusic(String filePath) {
         try {
             URL url = SoundController.class.getResource(filePath);
-            System.out.println("URL url = " + SoundController.class.getResource(filePath));
             if (url != null) {
                 AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
                 backgroundClip = AudioSystem.getClip(); // Stocker le clip de la musique de fond

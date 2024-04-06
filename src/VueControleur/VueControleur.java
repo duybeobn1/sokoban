@@ -28,9 +28,9 @@ import javax.imageio.ImageIO;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.*;
-
 import modele.*;
-
+import modele.sound.SoundController;
+import VueControleur.*;;
 /**
  * Cette classe a deux fonctions :
  * (1) Vue : proposer une représentation graphique de l'application (cases
@@ -91,9 +91,9 @@ public class VueControleur extends JFrame implements Observer {
         soundController = new SoundController();
         // Charger et jouer la musique d'arrière-plan
         // soundController.playBackgroundMusic("/res/sound/Background.wav");
-        soundController.playBackgroundMusic("sound/song.wav");
-        soundController.loadSoundEffect("sound/good.wav");
-        soundController.loadSoundEffect("sound/good2.wav");
+        soundController.playBackgroundMusic("song.wav");
+        soundController.loadSoundEffect("good.wav");
+        soundController.loadSoundEffect("good2.wav");
         
     }
 
@@ -288,7 +288,7 @@ public class VueControleur extends JFrame implements Observer {
                             if (c instanceof Objectif) {
                                 if (!objectifsAvecSonJoue.contains(x + "," + y)) {
                                     tabJLabel[x][y].setIcon(icoBlocObj);
-                                    soundController.playSoundEffect("sound/good.wav");
+                                    soundController.playSoundEffect("good2.wav");
                                     objectifsAvecSonJoue.add(x + "," + y); // Ajouter les coordonnées à l'ensemble
                                 } else {
                                     tabJLabel[x][y].setIcon(icoBlocObj); // Si le son a déjà été joué, juste définir l'icône sans le jouer à nouveau
