@@ -1,11 +1,8 @@
 package VueControleur;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -30,7 +27,6 @@ import java.util.TimerTask;
 import javax.swing.*;
 import modele.*;
 import modele.sound.SoundController;
-import VueControleur.*;;
 /**
  * Cette classe a deux fonctions :
  * (1) Vue : proposer une représentation graphique de l'application (cases
@@ -61,7 +57,6 @@ public class VueControleur extends JFrame implements Observer {
     public int undoCount = 0;
 
     private JButton resetButton;
-    private JLabel timeLabel;
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
 
@@ -77,6 +72,7 @@ public class VueControleur extends JFrame implements Observer {
         sizeX = jeu.SIZE_X;
         sizeY = _jeu.SIZE_Y;
         jeu = _jeu;
+        soundController = new SoundController();
         timer = new Timer();
         secondes = 0;
         chargerLesIcones();
@@ -88,9 +84,7 @@ public class VueControleur extends JFrame implements Observer {
         pack();
 
         // Initialiser le contrôleur audio
-        soundController = new SoundController();
         // Charger et jouer la musique d'arrière-plan
-        // soundController.playBackgroundMusic("/res/sound/Background.wav");
         soundController.playBackgroundMusic("song.wav");
         soundController.loadSoundEffect("good.wav");
         soundController.loadSoundEffect("good2.wav");
@@ -287,8 +281,9 @@ public class VueControleur extends JFrame implements Observer {
                         } else if (c.getEntite() instanceof Bloc) {
                             if (c instanceof Objectif) {
                                 if (!objectifsAvecSonJoue.contains(x + "," + y)) {
+                                    soundController.loadSoundEffect("good.wav");
+                                    soundController.playSoundEffect("good.wav");
                                     tabJLabel[x][y].setIcon(icoBlocObj);
-                                    soundController.playSoundEffect("good2.wav");
                                     objectifsAvecSonJoue.add(x + "," + y); // Ajouter les coordonnées à l'ensemble
                                 } else {
                                     tabJLabel[x][y].setIcon(icoBlocObj); // Si le son a déjà été joué, juste définir l'icône sans le jouer à nouveau
