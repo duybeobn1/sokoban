@@ -27,6 +27,7 @@ import java.util.TimerTask;
 import javax.swing.*;
 import modele.*;
 import modele.sound.SoundController;
+
 /**
  * Cette classe a deux fonctions :
  * (1) Vue : proposer une représentation graphique de l'application (cases
@@ -88,7 +89,7 @@ public class VueControleur extends JFrame implements Observer {
         soundController.playBackgroundMusic("song.wav");
         soundController.loadSoundEffect("good.wav");
         soundController.loadSoundEffect("good2.wav");
-        
+
     }
 
     public void startAndTrackTime() {
@@ -98,7 +99,7 @@ public class VueControleur extends JFrame implements Observer {
                 secondes++;
                 timerLabel.setText("Time: " + secondes + " seconds");
             }
-        }, 1000, 1000); 
+        }, 1000, 1000);
     }
 
     public void startTrackingPas() {
@@ -107,14 +108,14 @@ public class VueControleur extends JFrame implements Observer {
             public void run() {
                 pas.setText("Pas: " + jeu.getCompteurPas());
             }
-        }, 0, 1); 
+        }, 0, 1);
     }
 
     private void ajouterEcouteurClavier() {
-        addKeyListener(new KeyAdapter() { 
+        addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) { 
+                switch (e.getKeyCode()) {
 
                     case KeyEvent.VK_LEFT:
                         icoHero = chargerIcone("res/player/left.png");
@@ -197,7 +198,24 @@ public class VueControleur extends JFrame implements Observer {
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(grilleJLabels, BorderLayout.CENTER);
 
-
+        final int[] countStop = { 0, 1 };
+        JButton musicButton = new JButton("Stop/Play Background Music");
+        musicButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (countStop[1] <= 1) {
+                    if (countStop[0] == 0) {
+                        soundController.stopBackgroundMusic();
+                        countStop[0] = 1;
+                        countStop[1] = 0;
+                    } else {
+                        soundController.playBackgroundMusic("song.wav");
+                        countStop[0] = 0;
+                        countStop[1] = 1;
+                    }
+                }
+            }
+        });
 
         resetButton = new JButton("Reset");
         resetButton.addActionListener(new ActionListener() {
@@ -242,12 +260,14 @@ public class VueControleur extends JFrame implements Observer {
             }
         });
 
-        JPanel buttonPanel = new JPanel(); 
+        JPanel buttonPanel = new JPanel();
         buttonPanel.add(resetButton);
         buttonPanel.add(backButton);
         buttonPanel.add(pas);
         buttonPanel.add(timerLabel);
         buttonPanel.add(undoButton);
+        buttonPanel.add(musicButton);
+        musicButton.setFocusable(false);
         undoButton.setFocusable(false);
         resetButton.setFocusable(false);
         backButton.setFocusable(false);
@@ -263,7 +283,7 @@ public class VueControleur extends JFrame implements Observer {
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté
      * de la vue (tabJLabel)
      */
-    
+
     private void mettreAJourAffichage() {
 
         for (int x = 0; x < sizeX; x++) {
@@ -286,7 +306,8 @@ public class VueControleur extends JFrame implements Observer {
                                     tabJLabel[x][y].setIcon(icoBlocObj);
                                     objectifsAvecSonJoue.add(x + "," + y); // Ajouter les coordonnées à l'ensemble
                                 } else {
-                                    tabJLabel[x][y].setIcon(icoBlocObj); // Si le son a déjà été joué, juste définir l'icône sans le jouer à nouveau
+                                    tabJLabel[x][y].setIcon(icoBlocObj); // Si le son a déjà été joué, juste définir
+                                                                         // l'icône sans le jouer à nouveau
                                 }
                             } else {
                                 tabJLabel[x][y].setIcon(icoBloc);
@@ -346,52 +367,54 @@ public class VueControleur extends JFrame implements Observer {
     }
 
     private void writeHighscoreToFile() {
-    try {
-        String filename = "res/highscores.txt";
-        File file = new File(filename);
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
-        Map<Integer, Score> scores = new HashMap<>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(" ");
-            if (parts.length >= 4 && parts[0].equals("Level:")) {
-                int level = Integer.parseInt(parts[1]);
-                int seconds = Integer.parseInt(parts[3]);
-                int pas = Integer.parseInt(parts[5]);
-                Score score = new Score(seconds, pas);
-                scores.put(level, score);
+        try {
+            String filename = "res/highscores.txt";
+            File file = new File(filename);
+            if (!file.exists()) {
+                file.createNewFile();
             }
-        }
-        reader.close();
 
-        int currentLevel = jeu.getLevel() + 1;
-        Score currentScore = new Score(secondes, jeu.getCompteurPas());
-        Score existingScore = scores.get(currentLevel);
-
-        if (existingScore == null || currentScore.isBetterThan(existingScore)) {
-            scores.put(currentLevel, currentScore);
-
-            FileWriter writer = new FileWriter(filename);
-            for (Map.Entry<Integer, Score> entry : scores.entrySet()) {
-                writer.write("Level: " + entry.getKey() + " Seconds: " + entry.getValue().getSeconds() + " Pas: " + entry.getValue().getPas() + "\n");
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            Map<Integer, Score> scores = new HashMap<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length >= 4 && parts[0].equals("Level:")) {
+                    int level = Integer.parseInt(parts[1]);
+                    int seconds = Integer.parseInt(parts[3]);
+                    int pas = Integer.parseInt(parts[5]);
+                    Score score = new Score(seconds, pas);
+                    scores.put(level, score);
+                }
             }
-            writer.close();
+            reader.close();
+
+            int currentLevel = jeu.getLevel() + 1;
+            Score currentScore = new Score(secondes, jeu.getCompteurPas());
+            Score existingScore = scores.get(currentLevel);
+
+            if (existingScore == null || currentScore.isBetterThan(existingScore)) {
+                scores.put(currentLevel, currentScore);
+
+                FileWriter writer = new FileWriter(filename);
+                for (Map.Entry<Integer, Score> entry : scores.entrySet()) {
+                    writer.write("Level: " + entry.getKey() + " Seconds: " + entry.getValue().getSeconds() + " Pas: "
+                            + entry.getValue().getPas() + "\n");
+                }
+                writer.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to write highscore to file.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Failed to write highscore to file.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-}
 
     @Override
     public void update(Observable o, Object arg) {
-        
+
         mettreAJourAffichage();
-        jeu.updateBoxesOnObjectifs(); 
+        jeu.updateBoxesOnObjectifs();
         if (jeu.isWinConditionMet()) {
             // soundController.playBackgroundMusic("sound/good2.wav");
             timer.cancel();
