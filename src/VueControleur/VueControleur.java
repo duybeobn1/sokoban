@@ -1,6 +1,7 @@
 package VueControleur;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -53,6 +54,7 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBlocObj;
 
     private JPanel buttonPanel;
+    private JButton backButton;
     private JLabel timerLabel;
     private JLabel pas;
     public int undoCount = 0;
@@ -83,7 +85,6 @@ public class VueControleur extends JFrame implements Observer {
         jeu.addObserver(this);
         setLocation(getX() + 400, getY() + 70);
         pack();
-
         // Initialiser le contrôleur audio
         // Charger et jouer la musique d'arrière-plan
         soundController.playBackgroundMusic("song.wav");
@@ -166,7 +167,7 @@ public class VueControleur extends JFrame implements Observer {
         setTitle("Sokoban");
         setSize(400, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        setBackground(Color.GREEN);
         JPanel grilleJLabels = new JPanel(new GridBagLayout());
 
         int topInset = 100;
@@ -229,7 +230,7 @@ public class VueControleur extends JFrame implements Observer {
             }
         });
 
-        JButton backButton = new JButton("Back to choose level");
+        backButton = new JButton("Back to choose level");
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -346,10 +347,13 @@ public class VueControleur extends JFrame implements Observer {
                 timer = new Timer();
                 startAndTrackTime();
                 startTrackingPas();
+                soundController.playBackgroundMusic("song.wav");
                 break;
             case 1:
                 if (jeu.getLevel() >= 19) {
                     JOptionPane.showMessageDialog(null, "You finished all the game");
+                    backButton.doClick();
+
                 } else {
                     dispose();
                     LevelSelector vc = new LevelSelector();
