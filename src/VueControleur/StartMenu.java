@@ -2,7 +2,6 @@ package VueControleur;
 import javax.swing.*;
 
 import modele.HighScoreButtonHandler;
-import modele.Jeu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +13,7 @@ public class StartMenu extends JFrame {
     public StartMenu() {
         setTitle("Sokoban Start Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 400); // Adjust the size to accomodate new button
+        setSize(700, 400); 
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         add(Box.createRigidArea(new Dimension(0, 50)));
@@ -54,7 +53,4 @@ public class StartMenu extends JFrame {
         return button;
     }
 
-    private String getHighscores() {
-        return "Placeholder highscore data";
-    }
 }

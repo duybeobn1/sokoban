@@ -64,7 +64,6 @@ public class Jeu extends Observable {
         }
     }
 
-
     public int[][] loadLevel(String fileName) {
         int[][] data = Level.loadLevel(fileName);
         return data;
@@ -137,8 +136,6 @@ public class Jeu extends Observable {
      * Sinon, rien n'est fait.
      */
     public boolean deplacerEntite(Entite e, Direction d) {
-
-        
         boolean retour = true;
 
         Point pCourant = map.get(e.getCase());
@@ -247,10 +244,7 @@ public class Jeu extends Observable {
             notifyObservers();
         }
     }
-
-    
-    
-    
+ 
     private class Move {
         private Entite entity;
         private Direction direction;

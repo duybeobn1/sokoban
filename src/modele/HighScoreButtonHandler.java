@@ -30,4 +30,5 @@ public class HighScoreButtonHandler implements ActionListener {
         reader.close();
         return highscores.toString();
     }
+    
 }

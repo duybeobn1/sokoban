@@ -13,12 +13,6 @@ public abstract class Case extends Obj {
 
     // Cette fonction (a redéfinir) détermine le comportement (qui peut être complexe) lorsque l'entité entre dans la case
     public boolean entrerSurLaCase(Entite e) {
-
-        //Case c = e.getCase();
-        //if (c !=null) {
-        //    c.quitterLaCase();
-        //}
-
         setEntite(e);
         return true;
     }
@@ -26,8 +20,6 @@ public abstract class Case extends Obj {
     public void quitterLaCase() {
         e = null;
     }
-
-
 
     public Case(Jeu _jeu) {
         super(_jeu);
@@ -41,6 +33,5 @@ public abstract class Case extends Obj {
 
         e = _e;
         e.setCase(this);}
-
 
    }

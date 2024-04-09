@@ -20,7 +20,7 @@ public class Level {
             int targetRow = sc.nextInt();
             int targetCol = sc.nextInt();
 
-            int[][] matrix = new int[rows][cols]; // Créez la matrice avec les bonnes dimensions
+            int[][] matrix = new int[rows][cols]; 
 
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {

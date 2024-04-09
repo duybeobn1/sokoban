@@ -54,18 +54,17 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBlocObj;
 
     private JPanel buttonPanel;
+    private JButton resetButton;
     private JButton backButton;
     private JLabel timerLabel;
     private JLabel pas;
     public int undoCount = 0;
 
-    private JButton resetButton;
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée
                                   // à une icône, suivant ce qui est présent dans le modèle)
 
     public Timer timer;
     public int secondes;
-
     private SoundController soundController;
 
     // Déclarer un Set pour suivre les objectifs pour lesquels le son a été joué
@@ -85,8 +84,7 @@ public class VueControleur extends JFrame implements Observer {
         jeu.addObserver(this);
         setLocation(getX() + 400, getY() + 70);
         pack();
-        // Initialiser le contrôleur audio
-        // Charger et jouer la musique d'arrière-plan
+
         soundController.playBackgroundMusic("song.wav");
         soundController.loadSoundEffect("good.wav");
         soundController.loadSoundEffect("good2.wav");
@@ -100,7 +98,7 @@ public class VueControleur extends JFrame implements Observer {
                 secondes++;
                 timerLabel.setText("Time: " + secondes + " seconds");
             }
-        }, 1000, 1000);
+        }, 0, 1000);
     }
 
     public void startTrackingPas() {
@@ -117,7 +115,6 @@ public class VueControleur extends JFrame implements Observer {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-
                     case KeyEvent.VK_LEFT:
                         icoHero = chargerIcone("res/player/left.png");
                         jeu.deplacerHeros(Direction.gauche);
@@ -261,7 +258,7 @@ public class VueControleur extends JFrame implements Observer {
             }
         });
 
-        JPanel buttonPanel = new JPanel();
+        buttonPanel = new JPanel();
         buttonPanel.add(resetButton);
         buttonPanel.add(backButton);
         buttonPanel.add(pas);
@@ -420,7 +417,6 @@ public class VueControleur extends JFrame implements Observer {
         mettreAJourAffichage();
         jeu.updateBoxesOnObjectifs();
         if (jeu.isWinConditionMet()) {
-            // soundController.playBackgroundMusic("sound/good2.wav");
             timer.cancel();
             showEndGameOptions();
         }

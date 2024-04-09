@@ -4,9 +4,7 @@ import modele.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.TimerTask;
 
 public class LevelSelector extends JFrame {
 
@@ -22,7 +20,7 @@ JLabel timerLabel;
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         add(Box.createRigidArea(new Dimension(0, 50)));
-        int gridRows = 6;
+        int gridRows = 4;
         int gridColumns = 5;
         JPanel panel = new JPanel(new GridLayout(gridRows, gridColumns));
 
@@ -65,8 +63,8 @@ JLabel timerLabel;
 
     private void back() {
         
-        this.dispose(); // Close the current level selector window
-        StartMenu startMenu = new StartMenu(); // Create a new start menu
-        startMenu.setVisible(true); // Show the new start menu
+        this.dispose(); 
+        StartMenu startMenu = new StartMenu(); 
+        startMenu.setVisible(true); 
     }
 }
