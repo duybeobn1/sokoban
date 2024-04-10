@@ -133,6 +133,8 @@ public class Jeu extends Observable {
                     totalObjectifs++;
                 } else if (data[i][j] == 6) {
                     addCase(new Portal(this, 1), i, j);
+                }else if (data[i][j] == 7) {
+                    addCase(new Glace(this), i, j);
                 } else {
                     addCase(new Vide(this), i, j);
                 }
@@ -186,32 +188,52 @@ public class Jeu extends Observable {
      */
     public boolean deplacerEntite(Entite e, Direction d) {
         boolean retour = true;
-
         Point pCourant = map.get(e.getCase());
-
         Point pCible = calculerPointCible(pCourant, d);
-
+    
         if (contenuDansGrille(pCible)) {
-            Entite eCible = caseALaPosition(pCible).getEntite();
+            Case caseCible = grilleEntites[pCible.x][pCible.y];
+            Entite eCible = caseCible.getEntite();
+    
+            // Tente de pousser l'entité cible si elle existe
             if (eCible != null) {
                 Point pNext = calculerPointCible(pCible, d);
-
-                // Check if the next cell is within the grid and can be passed through
-                if (contenuDansGrille(pNext) && caseALaPosition(pNext).peutEtreParcouru()) {
-                    eCible.pousser(d);
+                if (contenuDansGrille(pNext) && grilleEntites[pNext.x][pNext.y].peutEtreParcouru()) {
+                    retour = eCible.pousser(d); // Essaye de pousser l'entité cible
                 } else {
                     retour = false;
                 }
             }
-
-            if (retour && caseALaPosition(pCible).peutEtreParcouru()) {
-                if (eCible != null) {
-                    compteurPas--;
-                }
-                compteurPas++;
+    
+            if (retour && caseCible.peutEtreParcouru()) {
+                // Déplace l'entité et vérifie si la case est de la glace
                 e.getCase().quitterLaCase();
-                caseALaPosition(pCible).entrerSurLaCase(e);
-
+                caseCible.entrerSurLaCase(e);
+                if (!(e instanceof Bloc)) {
+                    compteurPas++;
+                }
+    
+                // Logique spécifique pour le glissement sur la glace
+                while (caseCible instanceof Glace) {
+                    pCourant = pCible;
+                    pCible = calculerPointCible(pCourant, d);
+                    if (!contenuDansGrille(pCible) || !grilleEntites[pCible.x][pCible.y].peutEtreParcouru()) {
+                        break; // Arrête si la prochaine case n'est pas dans la grille ou ne peut pas être parcourue
+                    }
+    
+                    caseCible = grilleEntites[pCible.x][pCible.y];
+                    if (caseCible.getEntite() != null) {
+                        break; // Arrête si la prochaine case est occupée par une autre entité
+                    }
+    
+                    // Continue le glissement
+                    e.getCase().quitterLaCase();
+                    caseCible.entrerSurLaCase(e);
+                    if (!(e instanceof Bloc)) {
+                        compteurPas++; // Optionnel : décide si le glissement sur la glace compte comme des pas
+                    }
+                }
+    
                 if (e instanceof Bloc) {
                     blockMoveStack.push(new Move(e, d.opposite()));
                 }
@@ -221,9 +243,15 @@ public class Jeu extends Observable {
         } else {
             retour = false;
         }
-
+    
+        if (retour) {
+            setChanged();
+            notifyObservers();
+        }
+    
         return retour;
     }
+    
 
     private Point calculerPointCible(Point pCourant, Direction d) {
         Point pCible = null;

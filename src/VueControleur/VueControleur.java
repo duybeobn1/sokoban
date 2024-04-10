@@ -53,6 +53,8 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoObjectif;
     private ImageIcon icoBlocObj;
     private ImageIcon icoPortal;
+    private ImageIcon icoGlace;
+
 
     private JPanel buttonPanel;
     private JButton resetButton;
@@ -145,6 +147,7 @@ public class VueControleur extends JFrame implements Observer {
         icoObjectif = chargerIcone("res/blocks/spot.png");
         icoBlocObj = chargerIcone("res/blocks/boxOn.png");
         icoPortal = chargerIcone("res/blocks/outline2.png"); 
+        icoGlace = chargerIcone("res/blocks/outline.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -315,6 +318,9 @@ public class VueControleur extends JFrame implements Observer {
                     } else {
                         if (jeu.getGrille()[x][y] instanceof Portal) {
                             tabJLabel[x][y].setIcon(icoPortal);
+                        }
+                        if (c instanceof Glace) {
+                            tabJLabel[x][y].setIcon(icoGlace);
                         }
                         if (jeu.getGrille()[x][y] instanceof Mur) {
                             tabJLabel[x][y].setIcon(icoMur);
