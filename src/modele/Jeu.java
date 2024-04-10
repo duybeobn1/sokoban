@@ -44,6 +44,27 @@ public class Jeu extends Observable {
         initialisationNiveau();
     }
 
+
+    public Case getCaseInDirection(Case startCase, Direction d) {
+        Point startPoint = map.get(startCase);
+        if (startPoint != null) {
+            int x = startPoint.x;
+            int y = startPoint.y;
+    
+            switch (d) {
+                case haut: y -= 1; break;
+                case bas: y += 1; break;
+                case gauche: x -= 1; break;
+                case droite: x += 1; break;
+            }
+    
+            if (contenuDansGrille(new Point(x, y))) {
+                return grilleEntites[x][y];
+            }
+        }
+        return null;
+    }
+    
     public Case findNextEmptyCaseAdjacentToPortal(Portal portal) {
         Set<Case> occupiedCases = portalOccupiedAdjacentCases.getOrDefault(portal, new HashSet<>());
         Point portalPoint = map.get(portal);
@@ -135,9 +156,13 @@ public class Jeu extends Observable {
                     addCase(new Portal(this, 1), i, j);
                 }else if (data[i][j] == 7) {
                     addCase(new Glace(this), i, j);
+                } 
+                else if (data[i][j] == 8) {
+                    addCase(new Fire(this), i, j);    
                 } else {
                     addCase(new Vide(this), i, j);
                 }
+                
             }
         }
         for (int i = 0; i < data.length; i++) {
@@ -145,6 +170,9 @@ public class Jeu extends Observable {
 
                 if (data[i][j] == 2) {
                     Bloc b = new Bloc(this, grilleEntites[i][j]);
+                }
+                if (data[i][j] == 9) {
+                    Bloc b = new IceBloc(this, grilleEntites[i][j]);
                 }
                 if (data[i][j] == 4) {
                     addCase(new Objectif(this), i, j);
@@ -195,42 +223,49 @@ public class Jeu extends Observable {
             Case caseCible = grilleEntites[pCible.x][pCible.y];
             Entite eCible = caseCible.getEntite();
     
-            // Tente de pousser l'entité cible si elle existe
+            // Check for a Bloc moving into Fire
+            if (caseCible instanceof Fire) {
+                if (e instanceof Bloc && !(e instanceof IceBloc)) {
+                    e.getCase().quitterLaCase(); 
+                    return true; 
+            }
+        }
+            // Attempt to push the target entity if it exists
             if (eCible != null) {
                 Point pNext = calculerPointCible(pCible, d);
                 if (contenuDansGrille(pNext) && grilleEntites[pNext.x][pNext.y].peutEtreParcouru()) {
-                    retour = eCible.pousser(d); // Essaye de pousser l'entité cible
+                    retour = eCible.pousser(d); // Try to push the target entity
                 } else {
                     retour = false;
                 }
             }
     
             if (retour && caseCible.peutEtreParcouru()) {
-                // Déplace l'entité et vérifie si la case est de la glace
+                // Move the entity and check if the case is ice
                 e.getCase().quitterLaCase();
                 caseCible.entrerSurLaCase(e);
                 if (!(e instanceof Bloc)) {
                     compteurPas++;
                 }
     
-                // Logique spécifique pour le glissement sur la glace
+                // Specific logic for sliding on ice
                 while (caseCible instanceof Glace) {
                     pCourant = pCible;
                     pCible = calculerPointCible(pCourant, d);
                     if (!contenuDansGrille(pCible) || !grilleEntites[pCible.x][pCible.y].peutEtreParcouru()) {
-                        break; // Arrête si la prochaine case n'est pas dans la grille ou ne peut pas être parcourue
+                        break; // Stop if the next case is not in the grid or cannot be traversed
                     }
     
                     caseCible = grilleEntites[pCible.x][pCible.y];
                     if (caseCible.getEntite() != null) {
-                        break; // Arrête si la prochaine case est occupée par une autre entité
+                        break; // Stop if the next case is occupied by another entity
                     }
     
-                    // Continue le glissement
+                    // Continue sliding
                     e.getCase().quitterLaCase();
                     caseCible.entrerSurLaCase(e);
                     if (!(e instanceof Bloc)) {
-                        compteurPas++; // Optionnel : décide si le glissement sur la glace compte comme des pas
+                        compteurPas++; // Optional: decide if sliding on ice counts as steps
                     }
                 }
     
@@ -296,6 +331,9 @@ public class Jeu extends Observable {
         compteurPas = 0;
         totalObjectifs = 0;
         boxesOnObjectifs = 0;
+        heroMoveStack.clear();
+        blockMoveStack.clear();
+        portalOccupiedAdjacentCases.clear();
         heros = null;
         map.clear();
         grilleEntites = new Case[SIZE_X][SIZE_Y];

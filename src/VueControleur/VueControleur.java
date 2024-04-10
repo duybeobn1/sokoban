@@ -54,7 +54,8 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBlocObj;
     private ImageIcon icoPortal;
     private ImageIcon icoGlace;
-
+    private ImageIcon icoFire;
+    private ImageIcon icoIceBloc;
 
     private JPanel buttonPanel;
     private JButton resetButton;
@@ -146,8 +147,11 @@ public class VueControleur extends JFrame implements Observer {
         icoBloc = chargerIcone("res/blocks/boxOff.png");
         icoObjectif = chargerIcone("res/blocks/spot.png");
         icoBlocObj = chargerIcone("res/blocks/boxOn.png");
-        icoPortal = chargerIcone("res/blocks/outline2.png"); 
-        icoGlace = chargerIcone("res/blocks/outline.png");
+        icoPortal = chargerIcone("res/blocks/outline2.png");
+        icoGlace = chargerIcone("res/blocks/ice.jpg");
+        icoFire = chargerIcone("res/blocks/fire.jpg");
+        icoIceBloc = chargerIcone("res/blocks/IceBloc.jpg");
+
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -311,14 +315,23 @@ public class VueControleur extends JFrame implements Observer {
                                     tabJLabel[x][y].setIcon(icoBlocObj); // Si le son a déjà été joué, juste définir
                                                                          // l'icône sans le jouer à nouveau
                                 }
-                            } else {
+                            }
+
+                            else {
                                 tabJLabel[x][y].setIcon(icoBloc);
                             }
+                        }
+                        if (c.getEntite() instanceof IceBloc) {
+                            tabJLabel[x][y].setIcon(icoIceBloc);
                         }
                     } else {
                         if (jeu.getGrille()[x][y] instanceof Portal) {
                             tabJLabel[x][y].setIcon(icoPortal);
                         }
+                        if (jeu.getGrille()[x][y] instanceof Fire) {
+                            tabJLabel[x][y].setIcon(icoFire);
+                        }
+
                         if (c instanceof Glace) {
                             tabJLabel[x][y].setIcon(icoGlace);
                         }
@@ -338,43 +351,74 @@ public class VueControleur extends JFrame implements Observer {
     }
 
     public void showEndGameOptions() {
+        timer.cancel();
+        jeu.deleteObserver(this);
 
         soundController.stopBackgroundMusic();
         writeHighscoreToFile();
         String[] options = new String[] { "Play Again", "Next Level", "Main Menu" };
         int response = JOptionPane.showOptionDialog(null,
                 "Congratulations! You won the game! What would you like to do next?", "End Game",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
-                null, options, options[0]);
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
         switch (response) {
-            case 0:
-                resetButton.doClick();
-                timer.cancel();
-                timer = new Timer();
-                startAndTrackTime();
-                startTrackingPas();
-                soundController.playBackgroundMusic("song.wav");
+            case 0: // Play Again
+                resetGame();
                 break;
-            case 1:
-                if (jeu.getLevel() >= 19) {
-                    JOptionPane.showMessageDialog(null, "You finished all the game");
-                    backButton.doClick();
-
-                } else {
-                    dispose();
-                    LevelSelector vc = new LevelSelector();
-                    vc.loadLevel(jeu.getLevel() + 1);
-                }
+            case 1: // Next Level
+                loadNextLevel();
                 break;
-            case 2:
-                dispose();
-                StartMenu startMenu = new StartMenu();
-                startMenu.setVisible(true);
+            case 2: // Main Menu
+                backToMainMenu();
                 break;
             default:
                 break;
         }
+    }
+
+    private void resetGame() {
+        // Annuler toutes les tâches planifiées et supprimer toutes les annulations
+        timer.cancel();
+        timer.purge();
+
+        // Réinitialiser le timer pour une nouvelle utilisation
+        timer = new Timer();
+        startAndTrackTime();
+        startTrackingPas();
+
+        // Réinitialiser les états du jeu et de l'interface
+        secondes = 0;
+        undoCount = 0;
+        jeu.resetLevel();
+        jeu.addObserver(this);
+
+        // Réinitialiser les labels
+        pas.setText("Pas : 0");
+        timerLabel.setText("Time : 0 seconds");
+
+        // Mettre à jour l'affichage et recommencer la musique
+        mettreAJourAffichage();
+        soundController.playBackgroundMusic("song.wav");
+    }
+
+    private void loadNextLevel() {
+        // Charger le niveau suivant
+        if (jeu.getLevel() >= 19) {
+            JOptionPane.showMessageDialog(null, "You finished all the game");
+            backToMainMenu();
+        } else {
+            dispose();
+            LevelSelector vc = new LevelSelector();
+            vc.setVisible(true);
+            vc.loadLevel(jeu.getLevel() + 1);
+        }
+    }
+
+    private void backToMainMenu() {
+        // Retourner au menu principal
+        dispose();
+        StartMenu startMenu = new StartMenu();
+        startMenu.setVisible(true);
     }
 
     private void writeHighscoreToFile() {
