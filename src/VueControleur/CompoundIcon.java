@@ -1,4 +1,4 @@
-package modele;
+package VueControleur;
 
 import javax.swing.*;
 import java.awt.*;

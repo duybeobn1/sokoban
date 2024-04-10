@@ -7,13 +7,15 @@ package modele;
 
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Observable;
+import java.util.Set;
 import java.util.Stack;
 
 public class Jeu extends Observable {
-    private Stack<Move> heroMoveStack  = new Stack<>();
+    private Stack<Move> heroMoveStack = new Stack<>();
     private Stack<Move> blockMoveStack = new Stack<>(); // Stack for block movements
-
 
     public static final int SIZE_X = 10;
     public static final int SIZE_Y = 10;
@@ -31,13 +33,56 @@ public class Jeu extends Observable {
     private Case[][] grilleEntites = new Case[SIZE_X][SIZE_Y]; // permet de récupérer une case à partir de ses
                                                                // coordonnées
 
+    private Map<Portal, Set<Case>> portalOccupiedAdjacentCases = new HashMap<>();
+
+    public void resetPortalOccupiedCases() {
+        portalOccupiedAdjacentCases.clear();
+    }
+
     public Jeu(int level) {
         this.level = level;
         initialisationNiveau();
     }
+
+    public Case findNextEmptyCaseAdjacentToPortal(Portal portal) {
+        Set<Case> occupiedCases = portalOccupiedAdjacentCases.getOrDefault(portal, new HashSet<>());
+        Point portalPoint = map.get(portal);
+        int[][] directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}}; // Up, Right, Down, Left
+    
+        for (int[] dir : directions) {
+            int newX = portalPoint.x + dir[0];
+            int newY = portalPoint.y + dir[1];
+            if (isValidLocation(newX, newY)) {
+                Case potentialCase = grilleEntites[newX][newY];
+                if (potentialCase instanceof Vide && !occupiedCases.contains(potentialCase)) {
+                    occupiedCases.add(potentialCase); // Mark this case as occupied for this event
+                    portalOccupiedAdjacentCases.put(portal, occupiedCases);
+                    return potentialCase;
+                }
+            }
+        }
+        return null; // No suitable empty case found
+    }
+
+    private boolean isValidLocation(int x, int y) {
+        return x >= 0 && x < SIZE_X && y >= 0 && y < SIZE_Y;
+    }
+
+    public Portal findPortalPair(Portal portal) {
+        for (Case[] row : grilleEntites) {
+            for (Case c : row) {
+                if (c instanceof Portal && ((Portal) c).getPortalID() == portal.getPortalID() && c != portal) {
+                    return (Portal) c; // Found the matching portal
+                }
+            }
+        }
+        return null; // No matching portal found
+    }
+
     public int getLevel() {
         return level;
     }
+
     public Case[][] getGrille() {
         return grilleEntites;
     }
@@ -45,9 +90,11 @@ public class Jeu extends Observable {
     public Heros getHeros() {
         return heros;
     }
+
     public boolean abletoUndo() {
         return heroMoveStack.size() >= 1;
     }
+
     public void resetCompteur() {
         compteurPas = 0;
     }
@@ -79,11 +126,13 @@ public class Jeu extends Observable {
         }
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
-                 if (data[i][j] == 1) {
+                if (data[i][j] == 1) {
                     addCase(new Mur(this), i, j);
                 } else if (data[i][j] == 3) {
                     addCase(new Objectif(this), i, j);
                     totalObjectifs++;
+                } else if (data[i][j] == 6) {
+                    addCase(new Portal(this, 1), i, j);
                 } else {
                     addCase(new Vide(this), i, j);
                 }
@@ -176,7 +225,6 @@ public class Jeu extends Observable {
         return retour;
     }
 
-
     private Point calculerPointCible(Point pCourant, Direction d) {
         Point pCible = null;
 
@@ -233,7 +281,7 @@ public class Jeu extends Observable {
             Move lastHeroMove = heroMoveStack.pop();
             lastHeroMove.getDirection().opposite();
             deplacerEntite(lastHeroMove.getEntity(), lastHeroMove.direction);
-    
+            compteurPas = compteurPas - 2;
             // Undo blocs
             if (!blockMoveStack.isEmpty()) {
                 Move lastBlockMove = blockMoveStack.pop();
@@ -244,20 +292,20 @@ public class Jeu extends Observable {
             notifyObservers();
         }
     }
- 
+
     private class Move {
         private Entite entity;
         private Direction direction;
-    
+
         public Move(Entite entity, Direction direction) {
             this.entity = entity;
             this.direction = direction;
         }
-    
+
         public Entite getEntity() {
             return entity;
         }
-    
+
         public Direction getDirection() {
             return direction;
         }

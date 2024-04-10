@@ -1,9 +1,7 @@
 
-import java.io.File;
 
-import VueControleur.StartMenu;
-import VueControleur.VueControleur;
-import modele.Jeu;
+import VueControleur.*;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,6 +14,5 @@ public class Main {
     public static void main(String[] args) {        
         StartMenu sm = new StartMenu();
         sm.setVisible(true);
-
     }
 }   

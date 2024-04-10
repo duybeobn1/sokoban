@@ -10,8 +10,12 @@ public abstract class Entite extends Obj {
     public Entite(Jeu _jeu, Case _c) { super(_jeu); c = _c; c.setEntite(this);}
 
     public void quitterCase() {
-        c = null;
+        if (this.c != null) {
+            this.c.setEntite(null); // This line is crucial.
+            this.c = null;
+        }
     }
+    
 
     public Case getCase() {
         return c;

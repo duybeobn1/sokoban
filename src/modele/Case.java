@@ -10,8 +10,11 @@ public abstract class Case extends Obj {
     protected Entite e;
     public abstract boolean peutEtreParcouru();
 
-
-    // Cette fonction (a redéfinir) détermine le comportement (qui peut être complexe) lorsque l'entité entre dans la case
+    public void recevoirEntite(Entite e) {
+        this.setEntite(e); // Set the entity for this case
+        e.setCase(this); // Update the entity's current case
+    }
+    
     public boolean entrerSurLaCase(Entite e) {
         setEntite(e);
         return true;

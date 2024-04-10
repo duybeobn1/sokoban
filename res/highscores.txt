@@ -1,3 +1,2 @@
-Level: 1 Seconds: 0 Pas: 10
-Level: 2 Seconds: 19 Pas: 95
-Level: 3 Seconds: 11 Pas: 39
+Level: 1 Seconds: 3 Pas: 10
+Level: 2 Seconds: 7 Pas: 15

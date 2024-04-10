@@ -52,6 +52,7 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoBloc;
     private ImageIcon icoObjectif;
     private ImageIcon icoBlocObj;
+    private ImageIcon icoPortal;
 
     private JPanel buttonPanel;
     private JButton resetButton;
@@ -66,7 +67,6 @@ public class VueControleur extends JFrame implements Observer {
     public Timer timer;
     public int secondes;
     private SoundController soundController;
-
     // Déclarer un Set pour suivre les objectifs pour lesquels le son a été joué
     private Set<String> objectifsAvecSonJoue = new HashSet<>();
 
@@ -144,6 +144,7 @@ public class VueControleur extends JFrame implements Observer {
         icoBloc = chargerIcone("res/blocks/boxOff.png");
         icoObjectif = chargerIcone("res/blocks/spot.png");
         icoBlocObj = chargerIcone("res/blocks/boxOn.png");
+        icoPortal = chargerIcone("res/blocks/outline2.png"); 
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -312,6 +313,9 @@ public class VueControleur extends JFrame implements Observer {
                             }
                         }
                     } else {
+                        if (jeu.getGrille()[x][y] instanceof Portal) {
+                            tabJLabel[x][y].setIcon(icoPortal);
+                        }
                         if (jeu.getGrille()[x][y] instanceof Mur) {
                             tabJLabel[x][y].setIcon(icoMur);
                         } else if (jeu.getGrille()[x][y] instanceof Vide) {
